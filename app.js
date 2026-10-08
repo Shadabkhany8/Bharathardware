@@ -922,8 +922,50 @@ function processOrderPlacement(openWhatsApp) {
   // If requested, open WhatsApp with the formatted order text
   if (openWhatsApp) {
     const whatsappUrl = buildWhatsAppOrderUrl(lastPlacedOrder);
-    window.open(whatsappUrl, '_blank');
+    redirectToWhatsApp(whatsappUrl);
   }
+}
+
+// Bulletproof Universal WhatsApp Redirect (Handles Mobile App Intent & Desktop Popups)
+function redirectToWhatsApp(url) {
+  if (!url) return;
+
+  const isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  // Strategy 1: Anchor element synthetic click
+  try {
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = isMobile ? '_self' : '_blank';
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(() => {
+      if (link.parentNode) link.parentNode.removeChild(link);
+    }, 150);
+  } catch (err) {
+    console.warn('Anchor dispatch failed:', err);
+  }
+
+  // Strategy 2: If on mobile, window.location.href triggers the native WhatsApp app reliably
+  if (isMobile) {
+    setTimeout(() => {
+      window.location.href = url;
+    }, 50);
+    return;
+  }
+
+  // Strategy 3: Desktop fallback for popup-blocker evasion
+  setTimeout(() => {
+    try {
+      const win = window.open(url, '_blank', 'noopener,noreferrer');
+      if (!win || win.closed || typeof win.closed === 'undefined') {
+        window.location.href = url;
+      }
+    } catch (e) {
+      window.location.href = url;
+    }
+  }, 100);
 }
 
 // Format the WhatsApp Order Message as a Professional Wholesale Invoice / Bill
@@ -993,7 +1035,7 @@ function buildWhatsAppOrderUrl(order) {
   lines.push(`🙏 *Arbaz bhai, please check stock & confirm dispatch schedule.*`);
 
   const fullText = lines.join('\n');
-  return `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(fullText)}`;
+  return `https://api.whatsapp.com/send?phone=${CONFIG.whatsappNumber}&text=${encodeURIComponent(fullText)}`;
 }
 
 // Quick 1-Click WhatsApp Order for a Single Product (Formatted as Instant Bill)
@@ -1064,7 +1106,7 @@ function quickWhatsAppOrder(productId) {
   } catch (e) {}
 
   const whatsappUrl = buildWhatsAppOrderUrl(singleItemOrder);
-  window.open(whatsappUrl, '_blank');
+  redirectToWhatsApp(whatsappUrl);
 
   // Also pop up on-screen invoice receipt
   showOrderReceipt(singleItemOrder);
@@ -1164,7 +1206,7 @@ function directCartWhatsAppOrder() {
 
   // Open WhatsApp with full invoice bill
   const whatsappUrl = buildWhatsAppOrderUrl(quickCartOrder);
-  window.open(whatsappUrl, '_blank');
+  redirectToWhatsApp(whatsappUrl);
 
   // Close cart drawer & display on-screen invoice receipt
   toggleCartDrawer(false);
@@ -1219,6 +1261,12 @@ function showOrderReceipt(order) {
   document.getElementById('receiptGrandTotal').textContent = `₹${order.grandTotal.toLocaleString('en-IN')}`;
   document.getElementById('receiptBarcodeText').textContent = `*${order.orderNumber}*`;
 
+  const resendBtn = document.getElementById('btnReceiptWhatsApp');
+  if (resendBtn) {
+    const directUrl = buildWhatsAppOrderUrl(order);
+    resendBtn.setAttribute('data-url', directUrl);
+  }
+
   modal.classList.add('active');
   document.body.style.overflow = 'hidden';
 }
@@ -1226,7 +1274,7 @@ function showOrderReceipt(order) {
 function resendReceiptToWhatsApp() {
   if (!lastPlacedOrder) return;
   const url = buildWhatsAppOrderUrl(lastPlacedOrder);
-  window.open(url, '_blank');
+  redirectToWhatsApp(url);
 }
 
 function closeReceiptModal() {

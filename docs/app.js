@@ -1,7 +1,7 @@
 /**
  * BHARAT SPONGE — B2B Wholesale Website Application Logic
  * Factory Hub: Sanwer Road Industrial Area, Indore, MP
- * Owner / WhatsApp: Shadab Khan (+91 83052 88431)
+ * Owner / WhatsApp: Arbaz khan (+91 7869385515)
  */
 
 // ============================================================================
@@ -10,10 +10,10 @@
 const CONFIG = {
   appName: 'Bharat Sponge',
   hub: 'Sanwer Road Industrial Area, Indore, MP',
-  ownerName: 'Shadab Khan',
-  ownerPhone: '8305288431',
-  supportPhone: '+91 83052 88431',
-  whatsappNumber: '918305288431',
+  ownerName: 'Arbaz khan',
+  ownerPhone: '7869385515',
+  supportPhone: '+91 7869385515',
+  whatsappNumber: '917869385515',
   outsideIndoreSurcharge: 250,
   localIndoreSurcharge: 0,
 };
@@ -926,54 +926,77 @@ function processOrderPlacement(openWhatsApp) {
   }
 }
 
-// Format the WhatsApp Order Message beautifully
+// Format the WhatsApp Order Message as a Professional Wholesale Invoice / Bill
 function buildWhatsAppOrderUrl(order) {
+  const dateStr = new Date().toLocaleString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+
   const lines = [
-    `🛒 *NEW WHOLESALE ORDER: ${order.orderNumber}*`,
-    `🏢 *Bharat Sponge Enterprises (Indore Hub)*`,
+    `🧾 *BHARAT SPONGE — WHOLESALE INVOICE BILL*`,
+    `🏭 *Sanwer Road Industrial Area, Indore (M.P.)*`,
+    `👤 *Owner:* ${CONFIG.ownerName} (📞 +91 ${CONFIG.ownerPhone})`,
     `━━━━━━━━━━━━━━━━━━━━━━━━━`,
-    `👤 *Buyer:* ${order.buyerName}`,
-    `🏪 *Business:* ${order.businessName}`,
-    `📞 *Phone:* ${order.buyerPhone}`,
-    `📍 *Delivery Address:* ${order.fullAddress}`,
-    `🚚 *Dispatch Zone:* ${order.deliveryZoneLabel}`,
-    `💳 *Payment Mode:* ${order.paymentMethod} (Offline Settlement)`,
+    `📋 *Invoice / Bill No:* *${order.orderNumber}*`,
+    `📅 *Date & Time:* ${dateStr}`,
+    `👤 *Buyer / Dealer:* ${order.buyerName || 'Direct Wholesale Buyer'}`,
+    `🏪 *Firm / Shop:* ${order.businessName || 'Hardware Retail / Workshop'}`,
+    `📞 *Buyer Mobile:* ${order.buyerPhone || 'Via WhatsApp Direct'}`,
+    `📍 *Delivery City / Address:* ${order.fullAddress || 'Indore Dispatch Hub'}`,
+    `🚚 *Dispatch Zone:* ${order.deliveryZoneLabel || 'Indore Local Dispatch'}`,
+    `💳 *Payment Mode:* ${order.paymentMethod || 'Cash on Delivery / UPI'}`,
     `━━━━━━━━━━━━━━━━━━━━━━━━━`,
-    `📦 *WHOLESALE ORDER ITEMS:*`,
+    `📦 *ITEMIZED ORDER BILL:*`,
   ];
 
   order.items.forEach((item, index) => {
     lines.push(
-      `${index + 1}. *${item.name}* (SKU: ${item.sku})`
+      `${index + 1}️⃣ *${item.name}*`
     );
     lines.push(
-      `   └ Qty: *${item.quantity} ${item.unit}* @ ₹${item.price.toLocaleString('en-IN')} = ₹${item.subtotal.toLocaleString('en-IN')}`
+      `   • SKU: \`${item.sku}\``
+    );
+    lines.push(
+      `   • Rate: ₹${item.price.toLocaleString('en-IN')} / ${item.unit}`
+    );
+    lines.push(
+      `   • Qty: *${item.quantity} ${item.unit}*`
+    );
+    lines.push(
+      `   • Subtotal: *₹${item.subtotal.toLocaleString('en-IN')}*`
     );
   });
 
   lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━`);
-  lines.push(`📦 *Total Units:* ${order.totalUnits} items`);
-  lines.push(`💰 *Subtotal:* ₹${order.subtotal.toLocaleString('en-IN')}`);
+  lines.push(`📊 *BILL TOTAL SUMMARY:*`);
+  lines.push(`🔹 *Total Units / Packs:* ${order.totalUnits} Units`);
+  lines.push(`💰 *Wholesale Subtotal:* ₹${order.subtotal.toLocaleString('en-IN')}`);
   lines.push(
-    `🚚 *Delivery Surcharge:* ${
-      order.deliveryCharge === 0 ? '₹0 (FREE Indore Dispatch)' : `+₹${order.deliveryCharge.toLocaleString('en-IN')}`
+    `🚚 *Delivery Charge:* ${
+      order.deliveryCharge === 0 ? '₹0 (FREE Indore Hub Dispatch)' : `+₹${order.deliveryCharge.toLocaleString('en-IN')}`
     }`
   );
-  lines.push(`🏷️ *GRAND TOTAL:* *₹${order.grandTotal.toLocaleString('en-IN')}*`);
+  lines.push(`🏷️ *NET PAYABLE AMOUNT:* *₹${order.grandTotal.toLocaleString('en-IN')}*`);
 
   if (order.orderNotes) {
     lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━`);
-    lines.push(`📝 *Dispatch Note:* ${order.orderNotes}`);
+    lines.push(`📝 *Transport / Note:* ${order.orderNotes}`);
   }
 
   lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━`);
-  lines.push(`🙏 *Please confirm order & dispatch schedule.*`);
+  lines.push(`🔒 *Order Type:* Direct WhatsApp Order (Without Login)`);
+  lines.push(`🙏 *Arbaz bhai, please check stock & confirm dispatch schedule.*`);
 
   const fullText = lines.join('\n');
   return `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(fullText)}`;
 }
 
-// Quick 1-Click WhatsApp Order for a Single Product
+// Quick 1-Click WhatsApp Order for a Single Product (Formatted as Instant Bill)
 function quickWhatsAppOrder(productId) {
   const prod = PRODUCTS.find((p) => p.id === productId);
   if (!prod) return;
@@ -981,22 +1004,172 @@ function quickWhatsAppOrder(productId) {
   const cardInput = document.getElementById(`card-qty-${productId}`);
   const qty = cardInput ? parseInt(cardInput.value, 10) : prod.minimumOrderQuantity;
   const lineTotal = prod.wholesalePrice * qty;
+  const orderNumber = generateOrderNumber();
+  const dateStr = new Date().toLocaleString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
 
-  const message = [
-    `👋 *Hello Bharat Sponge (Indore Hub)*,`,
-    `I want to place a wholesale order for:`,
-    ``,
-    `📦 *Product:* ${prod.name}`,
-    `🏷️ *SKU:* ${prod.sku}`,
-    `📊 *Quantity:* ${qty} ${prod.unit} (MOQ: ${prod.minimumOrderQuantity})`,
-    `💰 *Rate:* ₹${prod.wholesalePrice} / ${prod.unit}`,
-    `💵 *Approx Subtotal:* ₹${lineTotal.toLocaleString('en-IN')}`,
-    ``,
-    `Please confirm stock availability and dispatch schedule.`,
-  ].join('\n');
+  // Pull saved buyer info if available
+  let buyerName = 'Direct Wholesale Buyer';
+  let businessName = 'Hardware Store / Retailer';
+  let city = 'Indore, MP';
+  try {
+    const saved = localStorage.getItem('bharat_sponge_customer_info');
+    if (saved) {
+      const info = JSON.parse(saved);
+      if (info.name) buyerName = info.name;
+      if (info.business) businessName = info.business;
+      if (info.city) city = info.city;
+    }
+  } catch (e) {}
 
-  const url = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(message)}`;
-  window.open(url, '_blank');
+  const singleItemOrder = {
+    orderNumber,
+    buyerName,
+    buyerPhone: 'Direct via WhatsApp',
+    businessName,
+    fullAddress: `${city} (Direct Dispatch)`,
+    isLocal: city.toLowerCase().includes('indore'),
+    deliveryZoneLabel: city.toLowerCase().includes('indore') ? 'Indore Local Dispatch' : 'Outside Indore Dispatch',
+    deliveryCharge: city.toLowerCase().includes('indore') ? 0 : CONFIG.outsideIndoreSurcharge,
+    paymentMethod: 'CASH',
+    orderNotes: 'Direct Single-Product WhatsApp Order (No Login)',
+    items: [
+      {
+        productId: prod.id,
+        name: prod.name,
+        sku: prod.sku,
+        unit: prod.unit,
+        price: prod.wholesalePrice,
+        quantity: qty,
+        subtotal: lineTotal,
+      },
+    ],
+    totalUnits: qty,
+    subtotal: lineTotal,
+    grandTotal: lineTotal,
+    timestamp: new Date().toISOString(),
+  };
+
+  // Save to history & open WhatsApp
+  try {
+    const existingOrders = JSON.parse(localStorage.getItem('bharat_sponge_orders') || '[]');
+    existingOrders.unshift(singleItemOrder);
+    localStorage.setItem('bharat_sponge_orders', JSON.stringify(existingOrders));
+  } catch (e) {}
+
+  const whatsappUrl = buildWhatsAppOrderUrl(singleItemOrder);
+  window.open(whatsappUrl, '_blank');
+
+  // Also pop up on-screen invoice receipt
+  showOrderReceipt(singleItemOrder);
+  showToast(`WhatsApp Bill open ho gaya: ${orderNumber}`);
+}
+
+// Direct 1-Click WhatsApp Order from Wholesale Cart (Without Login)
+function directCartWhatsAppOrder() {
+  if (cart.length === 0) {
+    showToast('Aapka wholesale cart khali hai. Pehle product add karein.');
+    return;
+  }
+
+  // Calculate cart items and totals
+  let subtotal = 0;
+  let totalUnits = 0;
+  const orderItems = [];
+
+  for (const item of cart) {
+    const prod = PRODUCTS.find((p) => p.id === item.productId);
+    if (!prod) continue;
+    const itemSubtotal = prod.wholesalePrice * item.quantity;
+    subtotal += itemSubtotal;
+    totalUnits += item.quantity;
+    orderItems.push({
+      productId: prod.id,
+      name: prod.name,
+      sku: prod.sku,
+      unit: prod.unit,
+      price: prod.wholesalePrice,
+      quantity: item.quantity,
+      subtotal: itemSubtotal,
+    });
+  }
+
+  if (orderItems.length === 0) {
+    showToast('Cart me koi valid product nahi mila.');
+    return;
+  }
+
+  // Check if customer info was previously typed or saved
+  let buyerName = document.getElementById('buyerName') ? document.getElementById('buyerName').value.trim() : '';
+  let businessName = document.getElementById('businessName') ? document.getElementById('businessName').value.trim() : '';
+  let buyerPhone = document.getElementById('buyerPhone') ? document.getElementById('buyerPhone').value.trim() : '';
+  let deliveryCity = document.getElementById('deliveryCity') ? document.getElementById('deliveryCity').value.trim() : 'Indore';
+  let deliveryAddress = document.getElementById('deliveryAddress') ? document.getElementById('deliveryAddress').value.trim() : '';
+
+  if (!buyerName || !businessName) {
+    try {
+      const saved = localStorage.getItem('bharat_sponge_customer_info');
+      if (saved) {
+        const info = JSON.parse(saved);
+        if (!buyerName && info.name) buyerName = info.name;
+        if (!businessName && info.business) businessName = info.business;
+        if (!buyerPhone && info.phone) buyerPhone = info.phone;
+        if (!deliveryCity && info.city) deliveryCity = info.city;
+        if (!deliveryAddress && info.address) deliveryAddress = info.address;
+      }
+    } catch (e) {}
+  }
+
+  // Smart defaults so customer NEVER has to login or register
+  if (!buyerName) buyerName = 'Direct Wholesale Buyer';
+  if (!businessName) businessName = 'Hardware Store / Retailer';
+  if (!deliveryCity) deliveryCity = 'Indore';
+  if (!deliveryAddress) deliveryAddress = `${deliveryCity} Local Dispatch`;
+
+  const orderNumber = generateOrderNumber();
+  const isLocal = deliveryCity.toLowerCase().includes('indore');
+  const deliveryCharge = isLocal ? CONFIG.localIndoreSurcharge : CONFIG.outsideIndoreSurcharge;
+  const grandTotal = subtotal + deliveryCharge;
+
+  const quickCartOrder = {
+    orderNumber,
+    buyerName,
+    buyerPhone: buyerPhone || 'Direct via WhatsApp',
+    businessName,
+    fullAddress: deliveryAddress,
+    isLocal,
+    deliveryZoneLabel: isLocal ? 'Indore Local Dispatch' : 'Outside Indore Dispatch',
+    deliveryCharge,
+    paymentMethod: 'CASH',
+    orderNotes: 'Direct Wholesale Cart Order (Without Login)',
+    items: orderItems,
+    totalUnits,
+    subtotal,
+    grandTotal,
+    timestamp: new Date().toISOString(),
+  };
+
+  // Save order to history
+  try {
+    const existingOrders = JSON.parse(localStorage.getItem('bharat_sponge_orders') || '[]');
+    existingOrders.unshift(quickCartOrder);
+    localStorage.setItem('bharat_sponge_orders', JSON.stringify(existingOrders));
+  } catch (e) {}
+
+  // Open WhatsApp with full invoice bill
+  const whatsappUrl = buildWhatsAppOrderUrl(quickCartOrder);
+  window.open(whatsappUrl, '_blank');
+
+  // Close cart drawer & display on-screen invoice receipt
+  toggleCartDrawer(false);
+  showOrderReceipt(quickCartOrder);
+  showToast(`WhatsApp par Bill generate ho gaya! (${orderNumber})`);
 }
 
 // ============================================================================

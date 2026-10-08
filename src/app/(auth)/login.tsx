@@ -84,7 +84,7 @@ export default function LoginScreen() {
             </View>
             <Text style={styles.title}>Wholesale Portal</Text>
             <Text style={styles.subtitle}>
-              B2B wholesale portal for hardware retailers & fabricators in Indore, MP. Managed by Shadab Khan (+91 83052 88431).
+              B2B wholesale portal for hardware retailers & fabricators in Indore, MP. Managed by Arbaz khan (+91 7869385515).
             </Text>
           </View>
 
@@ -175,7 +175,7 @@ export default function LoginScreen() {
                   style={styles.demoBtn}
                   activeOpacity={0.75}>
                   <Icon name="shield-check" size={14} color="#059669" />
-                  <Text style={styles.demoBtnText}>Owner (Shadab Khan)</Text>
+                  <Text style={styles.demoBtnText}>Owner (Arbaz khan)</Text>
                 </TouchableOpacity>
               </View>
               <View style={styles.demoHintsCard}>
@@ -183,7 +183,7 @@ export default function LoginScreen() {
                   • <Text style={styles.demoHintBold}>Dealer (Indore):</Text> customer@bharatsponge.com / Password@123
                 </Text>
                 <Text style={styles.demoHintText}>
-                  • <Text style={styles.demoHintBold}>Owner Admin (Shadab Khan):</Text> bharatsponge@gmail.com / Bharat@123
+                  • <Text style={styles.demoHintBold}>Owner Admin (Arbaz khan):</Text> bharatsponge@gmail.com / Bharat@123
                 </Text>
               </View>
             </View>

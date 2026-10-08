@@ -16,7 +16,7 @@ Yeh folder Bharat Sponge mobile application ka direct **Web Version** hai, jo bi
 
 3. **Direct WhatsApp Checkout**:
    - Customer cart mein item add karta hai, apna naam, shop/firm name aur delivery address daalta hai.
-   - **"Place Order via WhatsApp"** button click karte hi customer ka WhatsApp open ho jata hai aur **Shadab Khan (+91 83052 88431)** ke number par pura formatted order invoice ready ho jata hai:
+   - **"Place Order via WhatsApp"** ya **"Direct WhatsApp Order (Bill)"** button click karte hi customer ka WhatsApp open ho jata hai aur **Arbaz khan (+91 7869385515)** ke number par pura formatted B2B order invoice ready ho jata hai bina kisi login ke:
      - Sequential Order Number (`BS-2026-XXXXXX`)
      - Buyer & Shop Name
      - Delivery Address & City

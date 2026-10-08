@@ -50,7 +50,7 @@ export const AuthService = {
         existingData?.name ||
         user.displayName ||
         fallbackPayload?.name ||
-        (isAdmin ? 'Shadab Khan (Owner)' : 'Wholesale Dealer'),
+        (isAdmin ? 'Arbaz khan (Owner)' : 'Wholesale Dealer'),
       businessName:
         existingData?.businessName ||
         fallbackPayload?.businessName ||
@@ -106,7 +106,7 @@ export const AuthService = {
           const newCredential = await createUserWithEmailAndPassword(auth, email, password);
           firebaseUser = newCredential.user;
           token = await firebaseUser.getIdToken();
-          const displayName = isAdminCredentials ? 'Shadab Khan (Owner)' : 'Demo Dealer';
+          const displayName = isAdminCredentials ? 'Arbaz khan (Owner)' : 'Demo Dealer';
           await updateProfile(firebaseUser, { displayName });
         } catch {
           // If creation fails (e.g. email exists with diff password), rethrow original
@@ -133,7 +133,7 @@ export const AuthService = {
             const adminOffline: CustomerProfile = {
               id: 1,
               customerCode: 'ADMIN-01',
-              name: 'Shadab Khan (Owner)',
+              name: 'Arbaz khan (Owner)',
               businessName: 'Bharat Sponge',
               phone: Config.ownerPhone,
               email: ADMIN_EMAIL,

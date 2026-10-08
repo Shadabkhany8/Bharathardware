@@ -175,9 +175,9 @@ export const AdminService = {
         {
           id: 2,
           customerCode: 'ADMIN-01',
-          name: 'Shadab Khan (Owner)',
+          name: 'Arbaz khan (Owner)',
           businessName: 'Bharat Sponge Wholesale',
-          phone: '8305288431',
+          phone: '7869385515',
           email: 'bharatsponge@gmail.com',
           address: 'Sanwer Road Industrial Area',
           city: 'Indore',

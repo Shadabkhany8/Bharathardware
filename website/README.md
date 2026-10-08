@@ -73,4 +73,8 @@ Aapko koi playstore ya domain khareedne ki zaroorat nahi hai:
    - Yeh link aap WhatsApp pe customer ko bhej sakte hain.
 
 2. **GitHub Pages (Free Lifetime)**:
-   - Is repository mein `website` folder ko GitHub Pages branch par deploy kar sakte hain.
+   - Repo URL: `https://github.com/Shadabkhany8/Bharathardware`
+   - `.github/workflows/deploy-pages.yml` automatically `website` folder ko GitHub Pages par deploy kar deta hai.
+   - GitHub repo par **Settings > Pages > Source** mein **GitHub Actions** select karein.
+   - Live URL: **`https://shadabkhany8.github.io/Bharathardware/`**
+

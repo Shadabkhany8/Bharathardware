@@ -326,7 +326,7 @@ function renderProducts() {
 
             <button class="btn-quick-whatsapp" onclick="quickWhatsAppOrder(${product.id})">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
-              <span>Direct WhatsApp Order</span>
+              <span>Generate Bill &amp; WhatsApp</span>
             </button>
           </div>
         </div>
@@ -491,14 +491,16 @@ function updateCartUI() {
   const drawerTotal = document.getElementById('cartDrawerTotal');
   const itemsContainer = document.getElementById('cartItemsList');
   const proceedBtn = document.getElementById('btnProceedCheckout');
+  const directWaBtn = document.getElementById('btnCartDirectWhatsapp');
+  const pdfOnlyBtn = document.getElementById('btnCartPdfOnly');
 
   if (drawerCount) drawerCount.textContent = `${totalCount} item${totalCount === 1 ? '' : 's'}`;
   if (drawerUnits) drawerUnits.textContent = `${totalUnits} wholesale unit${totalUnits === 1 ? '' : 's'}`;
   if (drawerTotal) drawerTotal.textContent = formattedSubtotal;
 
-  if (proceedBtn) {
-    proceedBtn.disabled = totalCount === 0;
-  }
+  if (proceedBtn) proceedBtn.disabled = totalCount === 0;
+  if (directWaBtn) directWaBtn.disabled = totalCount === 0;
+  if (pdfOnlyBtn) pdfOnlyBtn.disabled = totalCount === 0;
 
   if (itemsContainer) {
     if (cart.length === 0) {
@@ -646,7 +648,7 @@ function openProductModal(productId) {
 
         <button class="btn-quick-whatsapp" onclick="quickWhatsAppOrder(${prod.id})">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
-          <span>Order This Item on WhatsApp</span>
+          <span>Generate Bill &amp; WhatsApp</span>
         </button>
       </div>
     </div>
@@ -696,17 +698,7 @@ function openCheckoutModal() {
     showToast('Your wholesale cart is empty. Please add products first.');
     return;
   }
-
-  toggleCartDrawer(false); // close drawer
-
-  const modal = document.getElementById('checkoutModalBackdrop');
-  if (!modal) return;
-
-  renderCheckoutReview();
-  autoDetectIndore();
-
-  modal.classList.add('active');
-  document.body.style.overflow = 'hidden';
+  directCartWhatsAppOrder();
 }
 
 function closeCheckoutModal(e) {
@@ -795,168 +787,277 @@ function renderCheckoutReview() {
 }
 
 // ============================================================================
-// Order Submission & WhatsApp Message Generator
+// Order Placement, PDF Invoice Engine & WhatsApp Dispatch (No Required Details!)
 // ============================================================================
-function handleCheckoutSubmit(e) {
-  if (e) e.preventDefault();
-  processOrderPlacement(true); // true = redirect to WhatsApp
-}
 
-function submitWithoutWhatsapp() {
-  const form = document.getElementById('checkoutForm');
-  if (form && !form.checkValidity()) {
-    form.reportValidity();
-    return;
-  }
-  processOrderPlacement(false); // false = view receipt only
-}
+let lastGeneratedPdfDoc = null;
 
-function processOrderPlacement(openWhatsApp) {
-  if (cart.length === 0) {
-    showToast('Your cart is empty.');
-    return;
-  }
-
-  const buyerName = document.getElementById('buyerName')?.value.trim();
-  const buyerPhone = document.getElementById('buyerPhone')?.value.trim();
-  const businessName = document.getElementById('businessName')?.value.trim();
-  const deliveryAddress = document.getElementById('deliveryAddress')?.value.trim();
-  const deliveryCity = document.getElementById('deliveryCity')?.value.trim();
-  const deliveryPincode = document.getElementById('deliveryPincode')?.value.trim();
-  const orderNotes = document.getElementById('orderNotes')?.value.trim();
-
-  // Selected payment method
-  const payRadio = document.querySelector('input[name="paymentMethod"]:checked');
-  const paymentMethod = payRadio ? payRadio.value : 'CASH';
-
-  if (!buyerName || !buyerPhone || !businessName || !deliveryAddress) {
-    showToast('Please fill all required buyer and delivery fields.');
-    return;
-  }
-
-  // Save customer info in localStorage for future convenience
-  try {
-    localStorage.setItem(
-      'bharat_sponge_customer_info',
-      JSON.stringify({
-        name: buyerName,
-        phone: buyerPhone,
-        business: businessName,
-        address: deliveryAddress,
-        city: deliveryCity,
-        pincode: deliveryPincode,
-      })
-    );
-  } catch (e) {
-    // ignore
-  }
-
-  // Generate Unique Sequential Order Number: BS-2026-XXXXXX
+function generateOrderNumber() {
   const randomSuffix = Math.floor(100000 + Math.random() * 900000);
-  const orderNumber = `BS-2026-${randomSuffix}`;
+  return `BS-2026-${randomSuffix}`;
+}
 
-  // Calculate totals
-  let totalUnits = 0;
-  let subtotal = 0;
-  const orderItems = [];
+// Client-side PDF generator (jsPDF + autoTable)
+function generateAndDownloadInvoicePDF(order) {
+  try {
+    if (typeof window.jspdf === 'undefined' || !window.jspdf.jsPDF) {
+      console.warn('jsPDF engine not available on window, skipping automatic PDF download.');
+      return false;
+    }
 
-  cart.forEach((item) => {
-    const prod = PRODUCTS.find((p) => p.id === item.productId);
-    if (prod) {
-      const lineTotal = prod.wholesalePrice * item.quantity;
-      totalUnits += item.quantity;
-      subtotal += lineTotal;
-      orderItems.push({
-        id: prod.id,
-        name: prod.name,
-        sku: prod.sku,
-        unit: prod.unit,
-        price: prod.wholesalePrice,
-        quantity: item.quantity,
-        subtotal: lineTotal,
+    const { jsPDF } = window.jspdf;
+    if (typeof window.applyPlugin === 'function') {
+      try { window.applyPlugin(jsPDF); } catch (e) {}
+    }
+
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'pt',
+      format: 'a4',
+    });
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 36; // 0.5 inch margin
+
+    // Top Brand Accent (Industrial Orange)
+    doc.setFillColor(234, 88, 12);
+    doc.rect(0, 0, pageWidth, 6, 'F');
+
+    // Header Navy Box (#0F172A)
+    doc.setFillColor(15, 23, 42);
+    doc.roundedRect(margin, 18, pageWidth - margin * 2, 72, 6, 6, 'F');
+
+    // Left Header Brand
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.text('BHARAT SPONGE', margin + 16, 44);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(203, 213, 225);
+    doc.text('INDUSTRIAL ABRASIVE SPONGES & FINISHING TOOLS', margin + 16, 58);
+    doc.text('Factory Hub: Sanwer Road Industrial Area, Sector B, Indore, MP 452015', margin + 16, 70);
+    doc.text('Owner / WhatsApp: Arbaz Khan | Mobile: +91 7869385515', margin + 16, 82);
+
+    // Right Header Badge
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.setTextColor(251, 146, 60);
+    doc.text('WHOLESALE TAX INVOICE', pageWidth - margin - 16, 44, { align: 'right' });
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(241, 245, 249);
+    doc.text(`Bill No: ${order.orderNumber}`, pageWidth - margin - 16, 58, { align: 'right' });
+    doc.text(`Date: ${order.dateStr}`, pageWidth - margin - 16, 70, { align: 'right' });
+    doc.text('Channel: Direct WhatsApp Order', pageWidth - margin - 16, 82, { align: 'right' });
+
+    // Order Info Card
+    const infoY = 100;
+    doc.setFillColor(248, 250, 252);
+    doc.setDrawColor(226, 232, 240);
+    doc.roundedRect(margin, infoY, pageWidth - margin * 2, 54, 4, 4, 'FD');
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(71, 85, 105);
+    doc.text('ORDER & FACTORY DISPATCH INFORMATION', margin + 12, infoY + 14);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(15, 23, 42);
+    doc.text('Customer / Dealer: ', margin + 12, infoY + 28);
+    doc.setFont('helvetica', 'bold');
+    doc.text(order.buyerName || 'Direct Wholesale Buyer', margin + 105, infoY + 28);
+
+    doc.setFont('helvetica', 'normal');
+    doc.text('Delivery Zone: ', margin + 12, infoY + 42);
+    doc.setFont('helvetica', 'bold');
+    doc.text(order.deliveryZoneLabel || 'Indore Local Dispatch (FREE)', margin + 105, infoY + 42);
+
+    const rightColX = pageWidth / 2 + 15;
+    doc.setFont('helvetica', 'normal');
+    doc.text('Settlement Mode: ', rightColX, infoY + 28);
+    doc.setFont('helvetica', 'bold');
+    doc.text(order.paymentMethod || 'Cash / UPI on Delivery', rightColX + 85, infoY + 28);
+
+    doc.setFont('helvetica', 'normal');
+    doc.text('Dispatch Hub: ', rightColX, infoY + 42);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Sanwer Road Hub, Indore (M.P.)', rightColX + 85, infoY + 42);
+
+    // Table Data
+    const tableRows = order.items.map((item, index) => [
+      index + 1,
+      item.name,
+      item.sku,
+      item.unit,
+      `Rs. ${Number(item.price).toLocaleString('en-IN')}`,
+      item.quantity,
+      `Rs. ${Number(item.subtotal).toLocaleString('en-IN')}`,
+    ]);
+
+    const autoTableFn = doc.autoTable || (typeof window.autoTable === 'function' ? window.autoTable : null);
+
+    if (autoTableFn) {
+      autoTableFn.call(doc, {
+        startY: infoY + 62,
+        margin: { left: margin, right: margin },
+        head: [['#', 'Item Description', 'SKU', 'Packaging Unit', 'Wholesale Rate', 'Qty', 'Amount']],
+        body: tableRows,
+        theme: 'grid',
+        styles: {
+          font: 'helvetica',
+          fontSize: 8.5,
+          cellPadding: 5,
+          textColor: [30, 41, 59],
+          lineColor: [226, 232, 240],
+          lineWidth: 0.5,
+        },
+        headStyles: {
+          fillColor: [15, 23, 42],
+          textColor: [255, 255, 255],
+          fontStyle: 'bold',
+          fontSize: 8.5,
+          halign: 'left',
+        },
+        columnStyles: {
+          0: { cellWidth: 24, halign: 'center' },
+          1: { cellWidth: 'auto', fontStyle: 'bold' },
+          2: { cellWidth: 64, textColor: [100, 116, 139] },
+          3: { cellWidth: 68 },
+          4: { cellWidth: 70, halign: 'right' },
+          5: { cellWidth: 36, halign: 'center', fontStyle: 'bold' },
+          6: { cellWidth: 74, halign: 'right', fontStyle: 'bold' },
+        },
+        alternateRowStyles: {
+          fillColor: [248, 250, 252],
+        },
       });
     }
-  });
 
-  const isLocal = selectedZone === 'INDORE';
-  const deliveryCharge = isLocal ? CONFIG.localIndoreSurcharge : CONFIG.outsideIndoreSurcharge;
-  const grandTotal = subtotal + deliveryCharge;
+    const finalY = (doc.lastAutoTable ? doc.lastAutoTable.finalY : infoY + 160) + 12;
 
-  lastPlacedOrder = {
-    orderNumber,
-    buyerName,
-    buyerPhone,
-    businessName,
-    fullAddress: `${deliveryAddress}, ${deliveryCity} - ${deliveryPincode}`,
-    isLocal,
-    deliveryZoneLabel: isLocal ? 'Indore Local Dispatch' : 'Outside Indore Dispatch',
-    deliveryCharge,
-    paymentMethod,
-    orderNotes,
-    items: orderItems,
-    totalUnits,
-    subtotal,
-    grandTotal,
-    timestamp: new Date().toISOString(),
-  };
+    // Totals Box
+    const summaryBoxWidth = 220;
+    const summaryBoxX = pageWidth - margin - summaryBoxWidth;
 
-  // Save to orders history in localStorage
-  try {
-    const existingOrders = JSON.parse(localStorage.getItem('bharat_sponge_orders') || '[]');
-    existingOrders.unshift(lastPlacedOrder);
-    localStorage.setItem('bharat_sponge_orders', JSON.stringify(existingOrders));
-  } catch (e) {
-    // ignore
-  }
+    doc.setFillColor(248, 250, 252);
+    doc.setDrawColor(226, 232, 240);
+    doc.roundedRect(summaryBoxX, finalY, summaryBoxWidth, 78, 4, 4, 'FD');
 
-  // Clear active cart
-  cart = [];
-  saveCart();
-  updateCartUI();
-  renderProducts();
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(71, 85, 105);
+    doc.text('Total Items / Units:', summaryBoxX + 12, finalY + 18);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(15, 23, 42);
+    doc.text(`${order.totalUnits} Units`, summaryBoxX + summaryBoxWidth - 12, finalY + 18, { align: 'right' });
 
-  // Close checkout modal & show receipt modal
-  closeCheckoutModal();
-  showOrderReceipt(lastPlacedOrder);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(71, 85, 105);
+    doc.text('Wholesale Subtotal:', summaryBoxX + 12, finalY + 34);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(15, 23, 42);
+    doc.text(`Rs. ${Number(order.subtotal).toLocaleString('en-IN')}`, summaryBoxX + summaryBoxWidth - 12, finalY + 34, { align: 'right' });
 
-  // If requested, open WhatsApp with the formatted order text
-  if (openWhatsApp) {
-    const whatsappUrl = buildWhatsAppOrderUrl(lastPlacedOrder);
-    redirectToWhatsApp(whatsappUrl);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(71, 85, 105);
+    doc.text('Delivery Charge:', summaryBoxX + 12, finalY + 50);
+    doc.setFont('helvetica', 'bold');
+    const delCharge = Number(order.deliveryCharge) || 0;
+    doc.setTextColor(delCharge === 0 ? 22 : 15, delCharge === 0 ? 101 : 23, delCharge === 0 ? 52 : 42);
+    doc.text(delCharge === 0 ? 'FREE (Indore Hub)' : `+Rs. ${delCharge.toLocaleString('en-IN')}`, summaryBoxX + summaryBoxWidth - 12, finalY + 50, { align: 'right' });
+
+    // Grand Total Highlight Card
+    doc.setFillColor(15, 23, 42);
+    doc.roundedRect(summaryBoxX, finalY + 58, summaryBoxWidth, 24, 3, 3, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(255, 255, 255);
+    doc.text('TOTAL AMOUNT:', summaryBoxX + 10, finalY + 74);
+    doc.setTextColor(251, 146, 60);
+    doc.text(`Rs. ${Number(order.grandTotal).toLocaleString('en-IN')}`, summaryBoxX + summaryBoxWidth - 10, finalY + 74, { align: 'right' });
+
+    // Terms & Guarantee
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8.5);
+    doc.setTextColor(15, 23, 42);
+    doc.text('TERMS & DISPATCH GUARANTEE:', margin, finalY + 18);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(100, 116, 139);
+    doc.text('• Direct factory dispatch from Sanwer Road Industrial Area, Indore, M.P.', margin, finalY + 30);
+    doc.text('• Wholesale B2B supply: 100% Genuine industrial grade abrasive foam.', margin, finalY + 42);
+    doc.text('• For dispatch tracking & transport receipts, WhatsApp/Call +91 7869385515.', margin, finalY + 54);
+    doc.text('• This bill has been automatically recorded and forwarded to factory dispatch.', margin, finalY + 66);
+
+    // Footer
+    const footerY = Math.max(finalY + 96, pageHeight - 50);
+    doc.setDrawColor(226, 232, 240);
+    doc.setLineWidth(0.5);
+    doc.line(margin, footerY - 10, pageWidth - margin, footerY - 10);
+
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(148, 163, 184);
+    doc.text('Bharat Sponge Wholesale Hub • Computer-generated commercial order bill', margin, footerY + 2);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(71, 85, 105);
+    doc.text('For BHARAT SPONGE (Authorized Dispatch Desk)', pageWidth - margin, footerY + 2, { align: 'right' });
+
+    // Save PDF file
+    const filename = `BharatSponge_Invoice_${order.orderNumber}.pdf`;
+    try {
+      doc.save(filename);
+    } catch (saveErr) {
+      console.warn('doc.save failed, using blob link fallback:', saveErr);
+      if (typeof URL !== 'undefined' && typeof URL.createObjectURL === 'function') {
+        const blob = doc.output('blob');
+        const blobUrl = URL.createObjectURL(blob);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = blobUrl;
+        downloadLink.download = filename;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        setTimeout(() => {
+          if (downloadLink.parentNode) downloadLink.parentNode.removeChild(downloadLink);
+          URL.revokeObjectURL(blobUrl);
+        }, 300);
+      }
+    }
+    lastGeneratedPdfDoc = doc;
+    return true;
+  } catch (err) {
+    console.error('Error generating PDF:', err);
+    return false;
   }
 }
 
-// Bulletproof Universal WhatsApp Redirect (Handles Mobile App Intent & Desktop Popups)
+function downloadCurrentOrderPDF() {
+  if (lastPlacedOrder) {
+    generateAndDownloadInvoicePDF(lastPlacedOrder);
+    showToast('Invoice PDF downloaded!');
+  } else {
+    showToast('No recent invoice found.');
+  }
+}
+
+// Universal Synchronous WhatsApp Redirect (Cross-Platform Mobile App & Desktop Web)
 function redirectToWhatsApp(url) {
   if (!url) return;
 
   const isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-  // Strategy 1: Anchor element synthetic click
-  try {
-    const link = document.createElement('a');
-    link.href = url;
-    link.target = isMobile ? '_self' : '_blank';
-    link.rel = 'noopener noreferrer';
-    document.body.appendChild(link);
-    link.click();
-    setTimeout(() => {
-      if (link.parentNode) link.parentNode.removeChild(link);
-    }, 150);
-  } catch (err) {
-    console.warn('Anchor dispatch failed:', err);
-  }
-
-  // Strategy 2: If on mobile, window.location.href triggers the native WhatsApp app reliably
   if (isMobile) {
-    setTimeout(() => {
-      window.location.href = url;
-    }, 50);
-    return;
-  }
-
-  // Strategy 3: Desktop fallback for popup-blocker evasion
-  setTimeout(() => {
+    // Direct location change invokes WhatsApp native application immediately
+    window.location.href = url;
+  } else {
+    // On desktop, window.open in new tab opens WhatsApp Web or prompts Desktop App
     try {
       const win = window.open(url, '_blank', 'noopener,noreferrer');
       if (!win || win.closed || typeof win.closed === 'undefined') {
@@ -965,12 +1066,12 @@ function redirectToWhatsApp(url) {
     } catch (e) {
       window.location.href = url;
     }
-  }, 100);
+  }
 }
 
-// Format the WhatsApp Order Message as a Professional Wholesale Invoice / Bill
+// Professional WhatsApp Message Formatter
 function buildWhatsAppOrderUrl(order) {
-  const dateStr = new Date().toLocaleString('en-IN', {
+  const dateStr = order.dateStr || new Date().toLocaleString('en-IN', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
@@ -986,59 +1087,44 @@ function buildWhatsAppOrderUrl(order) {
     `━━━━━━━━━━━━━━━━━━━━━━━━━`,
     `📋 *Invoice / Bill No:* *${order.orderNumber}*`,
     `📅 *Date & Time:* ${dateStr}`,
-    `👤 *Buyer / Dealer:* ${order.buyerName || 'Direct Wholesale Buyer'}`,
-    `🏪 *Firm / Shop:* ${order.businessName || 'Hardware Retail / Workshop'}`,
-    `📞 *Buyer Mobile:* ${order.buyerPhone || 'Via WhatsApp Direct'}`,
-    `📍 *Delivery City / Address:* ${order.fullAddress || 'Indore Dispatch Hub'}`,
-    `🚚 *Dispatch Zone:* ${order.deliveryZoneLabel || 'Indore Local Dispatch'}`,
-    `💳 *Payment Mode:* ${order.paymentMethod || 'Cash on Delivery / UPI'}`,
+    `👤 *Customer / Dealer:* ${order.buyerName || 'Direct Wholesale Buyer'}`,
+    `🏪 *Firm / Shop:* ${order.businessName || 'Wholesale Order'}`,
+    `📍 *Factory Dispatch:* Indore Hub (Sanwer Road)`,
+    `💳 *Payment Terms:* Cash on Delivery / UPI Settlement`,
     `━━━━━━━━━━━━━━━━━━━━━━━━━`,
-    `📦 *ITEMIZED ORDER BILL:*`,
+    `📦 *ORDERED ITEMS (WHOLESALE MOQ):*`,
   ];
 
   order.items.forEach((item, index) => {
-    lines.push(
-      `${index + 1}️⃣ *${item.name}*`
-    );
-    lines.push(
-      `   • SKU: \`${item.sku}\``
-    );
-    lines.push(
-      `   • Rate: ₹${item.price.toLocaleString('en-IN')} / ${item.unit}`
-    );
-    lines.push(
-      `   • Qty: *${item.quantity} ${item.unit}*`
-    );
-    lines.push(
-      `   • Subtotal: *₹${item.subtotal.toLocaleString('en-IN')}*`
-    );
+    lines.push(`${index + 1}️⃣ *${item.name}*`);
+    lines.push(`   • SKU: \`${item.sku}\``);
+    lines.push(`   • Rate: ₹${Number(item.price).toLocaleString('en-IN')} / ${item.unit}`);
+    lines.push(`   • Qty: *${item.quantity} ${item.unit}*`);
+    lines.push(`   • Line Total: *₹${Number(item.subtotal).toLocaleString('en-IN')}*`);
   });
 
   lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━`);
   lines.push(`📊 *BILL TOTAL SUMMARY:*`);
-  lines.push(`🔹 *Total Units / Packs:* ${order.totalUnits} Units`);
-  lines.push(`💰 *Wholesale Subtotal:* ₹${order.subtotal.toLocaleString('en-IN')}`);
-  lines.push(
-    `🚚 *Delivery Charge:* ${
-      order.deliveryCharge === 0 ? '₹0 (FREE Indore Hub Dispatch)' : `+₹${order.deliveryCharge.toLocaleString('en-IN')}`
-    }`
-  );
-  lines.push(`🏷️ *NET PAYABLE AMOUNT:* *₹${order.grandTotal.toLocaleString('en-IN')}*`);
+  lines.push(`🔹 *Total Wholesale Units:* ${order.totalUnits} Units`);
+  lines.push(`💰 *Wholesale Subtotal:* ₹${Number(order.subtotal).toLocaleString('en-IN')}`);
+  lines.push(`🚚 *Indore Local Delivery:* FREE (₹0 Surcharge)`);
+  lines.push(`🏷️ *NET AMOUNT PAYABLE:* *₹${Number(order.grandTotal).toLocaleString('en-IN')}*`);
 
   if (order.orderNotes) {
     lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━`);
-    lines.push(`📝 *Transport / Note:* ${order.orderNotes}`);
+    lines.push(`📝 *Note / Transport:* ${order.orderNotes}`);
   }
 
   lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━`);
-  lines.push(`🔒 *Order Type:* Direct WhatsApp Order (Without Login)`);
-  lines.push(`🙏 *Arbaz bhai, please check stock & confirm dispatch schedule.*`);
+  lines.push(`📄 *Official PDF Invoice generated & saved on device:*`);
+  lines.push(`📁 \`BharatSponge_Invoice_${order.orderNumber}.pdf\``);
+  lines.push(`🙏 *Arbaz bhai, please confirm wholesale stock & dispatch schedule.*`);
 
   const fullText = lines.join('\n');
-  return `https://api.whatsapp.com/send?phone=${CONFIG.whatsappNumber}&text=${encodeURIComponent(fullText)}`;
+  return `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(fullText)}`;
 }
 
-// Quick 1-Click WhatsApp Order for a Single Product (Formatted as Instant Bill)
+// 1-Click WhatsApp Order for a Single Product (Generates PDF + Opens WhatsApp directly)
 function quickWhatsAppOrder(productId) {
   const prod = PRODUCTS.find((p) => p.id === productId);
   if (!prod) return;
@@ -1056,31 +1142,18 @@ function quickWhatsAppOrder(productId) {
     hour12: true,
   });
 
-  // Pull saved buyer info if available
-  let buyerName = 'Direct Wholesale Buyer';
-  let businessName = 'Hardware Store / Retailer';
-  let city = 'Indore, MP';
-  try {
-    const saved = localStorage.getItem('bharat_sponge_customer_info');
-    if (saved) {
-      const info = JSON.parse(saved);
-      if (info.name) buyerName = info.name;
-      if (info.business) businessName = info.business;
-      if (info.city) city = info.city;
-    }
-  } catch (e) {}
-
   const singleItemOrder = {
     orderNumber,
-    buyerName,
+    dateStr,
+    buyerName: 'Direct Wholesale Buyer',
     buyerPhone: 'Direct via WhatsApp',
-    businessName,
-    fullAddress: `${city} (Direct Dispatch)`,
-    isLocal: city.toLowerCase().includes('indore'),
-    deliveryZoneLabel: city.toLowerCase().includes('indore') ? 'Indore Local Dispatch' : 'Outside Indore Dispatch',
-    deliveryCharge: city.toLowerCase().includes('indore') ? 0 : CONFIG.outsideIndoreSurcharge,
-    paymentMethod: 'CASH',
-    orderNotes: 'Direct Single-Product WhatsApp Order (No Login)',
+    businessName: 'Hardware Store / Retailer',
+    fullAddress: 'Indore Local Dispatch (Factory Hub)',
+    isLocal: true,
+    deliveryZoneLabel: 'Indore Local Dispatch (FREE)',
+    deliveryCharge: 0,
+    paymentMethod: 'Cash / UPI on Delivery',
+    orderNotes: 'Direct Single-Product Wholesale Order',
     items: [
       {
         productId: prod.id,
@@ -1098,29 +1171,27 @@ function quickWhatsAppOrder(productId) {
     timestamp: new Date().toISOString(),
   };
 
-  // Save to history & open WhatsApp
-  try {
-    const existingOrders = JSON.parse(localStorage.getItem('bharat_sponge_orders') || '[]');
-    existingOrders.unshift(singleItemOrder);
-    localStorage.setItem('bharat_sponge_orders', JSON.stringify(existingOrders));
-  } catch (e) {}
+  lastPlacedOrder = singleItemOrder;
 
+  // 1. Generate & download PDF Bill
+  generateAndDownloadInvoicePDF(singleItemOrder);
+
+  // 2. Prepare WhatsApp URL & trigger redirect
   const whatsappUrl = buildWhatsAppOrderUrl(singleItemOrder);
   redirectToWhatsApp(whatsappUrl);
 
-  // Also pop up on-screen invoice receipt
+  // 3. Show order receipt on screen
   showOrderReceipt(singleItemOrder);
-  showToast(`WhatsApp Bill open ho gaya: ${orderNumber}`);
+  showToast(`Bill PDF generated & WhatsApp opened (${orderNumber})!`);
 }
 
-// Direct 1-Click WhatsApp Order from Wholesale Cart (Without Login)
+// Direct 1-Click WhatsApp Order from Wholesale Cart (Generates PDF + Sends to WhatsApp, Zero Form Filling!)
 function directCartWhatsAppOrder() {
   if (cart.length === 0) {
-    showToast('Aapka wholesale cart khali hai. Pehle product add karein.');
+    showToast('Your wholesale cart is empty. Please add products first.');
     return;
   }
 
-  // Calculate cart items and totals
   let subtotal = 0;
   let totalUnits = 0;
   const orderItems = [];
@@ -1143,94 +1214,169 @@ function directCartWhatsAppOrder() {
   }
 
   if (orderItems.length === 0) {
-    showToast('Cart me koi valid product nahi mila.');
+    showToast('No valid products in cart.');
     return;
   }
 
-  // Check if customer info was previously typed or saved
-  let buyerName = document.getElementById('buyerName') ? document.getElementById('buyerName').value.trim() : '';
-  let businessName = document.getElementById('businessName') ? document.getElementById('businessName').value.trim() : '';
-  let buyerPhone = document.getElementById('buyerPhone') ? document.getElementById('buyerPhone').value.trim() : '';
-  let deliveryCity = document.getElementById('deliveryCity') ? document.getElementById('deliveryCity').value.trim() : 'Indore';
-  let deliveryAddress = document.getElementById('deliveryAddress') ? document.getElementById('deliveryAddress').value.trim() : '';
-
-  if (!buyerName || !businessName) {
-    try {
-      const saved = localStorage.getItem('bharat_sponge_customer_info');
-      if (saved) {
-        const info = JSON.parse(saved);
-        if (!buyerName && info.name) buyerName = info.name;
-        if (!businessName && info.business) businessName = info.business;
-        if (!buyerPhone && info.phone) buyerPhone = info.phone;
-        if (!deliveryCity && info.city) deliveryCity = info.city;
-        if (!deliveryAddress && info.address) deliveryAddress = info.address;
-      }
-    } catch (e) {}
-  }
-
-  // Smart defaults so customer NEVER has to login or register
-  if (!buyerName) buyerName = 'Direct Wholesale Buyer';
-  if (!businessName) businessName = 'Hardware Store / Retailer';
-  if (!deliveryCity) deliveryCity = 'Indore';
-  if (!deliveryAddress) deliveryAddress = `${deliveryCity} Local Dispatch`;
+  // Pull optional note if customer typed one
+  const noteInput = document.getElementById('cartOptionalNote');
+  const optionalNote = noteInput ? noteInput.value.trim() : '';
 
   const orderNumber = generateOrderNumber();
-  const isLocal = deliveryCity.toLowerCase().includes('indore');
-  const deliveryCharge = isLocal ? CONFIG.localIndoreSurcharge : CONFIG.outsideIndoreSurcharge;
-  const grandTotal = subtotal + deliveryCharge;
+  const dateStr = new Date().toLocaleString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
 
-  const quickCartOrder = {
+  const cartOrder = {
     orderNumber,
-    buyerName,
-    buyerPhone: buyerPhone || 'Direct via WhatsApp',
-    businessName,
-    fullAddress: deliveryAddress,
-    isLocal,
-    deliveryZoneLabel: isLocal ? 'Indore Local Dispatch' : 'Outside Indore Dispatch',
-    deliveryCharge,
-    paymentMethod: 'CASH',
-    orderNotes: 'Direct Wholesale Cart Order (Without Login)',
+    dateStr,
+    buyerName: 'Direct Wholesale Buyer',
+    buyerPhone: 'Direct via WhatsApp',
+    businessName: 'Hardware Store / Retailer',
+    fullAddress: 'Indore Local Dispatch (Factory Hub)',
+    isLocal: true,
+    deliveryZoneLabel: 'Indore Local Dispatch (FREE)',
+    deliveryCharge: 0,
+    paymentMethod: 'Cash / UPI on Delivery',
+    orderNotes: optionalNote,
     items: orderItems,
     totalUnits,
     subtotal,
-    grandTotal,
+    grandTotal: subtotal,
     timestamp: new Date().toISOString(),
   };
 
-  // Save order to history
-  try {
-    const existingOrders = JSON.parse(localStorage.getItem('bharat_sponge_orders') || '[]');
-    existingOrders.unshift(quickCartOrder);
-    localStorage.setItem('bharat_sponge_orders', JSON.stringify(existingOrders));
-  } catch (e) {}
+  lastPlacedOrder = cartOrder;
 
-  // Open WhatsApp with full invoice bill
-  const whatsappUrl = buildWhatsAppOrderUrl(quickCartOrder);
+  // 1. Generate & download PDF Bill
+  generateAndDownloadInvoicePDF(cartOrder);
+
+  // 2. Open WhatsApp with full invoice bill
+  const whatsappUrl = buildWhatsAppOrderUrl(cartOrder);
   redirectToWhatsApp(whatsappUrl);
 
-  // Close cart drawer & display on-screen invoice receipt
+  // 3. Close cart drawer & display on-screen invoice receipt
   toggleCartDrawer(false);
-  showOrderReceipt(quickCartOrder);
-  showToast(`WhatsApp par Bill generate ho gaya! (${orderNumber})`);
+  showOrderReceipt(cartOrder);
+
+  // 4. Reset Cart
+  cart = [];
+  saveCart();
+  updateCartUI();
+  renderProducts();
+
+  showToast(`Bill PDF generated & WhatsApp opened (${orderNumber})!`);
 }
 
-// ============================================================================
-// Order Receipt Modal (Challan / Invoice)
-// ============================================================================
+// Generate & Download PDF Bill Only (Without navigating to WhatsApp)
+function directCartGenerateBillOnly() {
+  if (cart.length === 0) {
+    showToast('Your wholesale cart is empty.');
+    return;
+  }
+
+  let subtotal = 0;
+  let totalUnits = 0;
+  const orderItems = [];
+
+  for (const item of cart) {
+    const prod = PRODUCTS.find((p) => p.id === item.productId);
+    if (!prod) continue;
+    const itemSubtotal = prod.wholesalePrice * item.quantity;
+    subtotal += itemSubtotal;
+    totalUnits += item.quantity;
+    orderItems.push({
+      productId: prod.id,
+      name: prod.name,
+      sku: prod.sku,
+      unit: prod.unit,
+      price: prod.wholesalePrice,
+      quantity: item.quantity,
+      subtotal: itemSubtotal,
+    });
+  }
+
+  const noteInput = document.getElementById('cartOptionalNote');
+  const optionalNote = noteInput ? noteInput.value.trim() : '';
+
+  const orderNumber = generateOrderNumber();
+  const dateStr = new Date().toLocaleString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+
+  const cartOrder = {
+    orderNumber,
+    dateStr,
+    buyerName: 'Direct Wholesale Buyer',
+    buyerPhone: 'Direct via WhatsApp',
+    businessName: 'Hardware Store / Retailer',
+    fullAddress: 'Indore Local Dispatch (Factory Hub)',
+    isLocal: true,
+    deliveryZoneLabel: 'Indore Local Dispatch (FREE)',
+    deliveryCharge: 0,
+    paymentMethod: 'Cash / UPI on Delivery',
+    orderNotes: optionalNote,
+    items: orderItems,
+    totalUnits,
+    subtotal,
+    grandTotal: subtotal,
+    timestamp: new Date().toISOString(),
+  };
+
+  lastPlacedOrder = cartOrder;
+  generateAndDownloadInvoicePDF(cartOrder);
+  toggleCartDrawer(false);
+  showOrderReceipt(cartOrder);
+
+  cart = [];
+  saveCart();
+  updateCartUI();
+  renderProducts();
+
+  showToast(`Bill PDF downloaded (${orderNumber})!`);
+}
+
+function handleCheckoutSubmit(e) {
+  if (e) e.preventDefault();
+  directCartWhatsAppOrder();
+}
+
+function submitWithoutWhatsapp() {
+  directCartGenerateBillOnly();
+}
+
+// Order Receipt Modal
 function showOrderReceipt(order) {
   const modal = document.getElementById('receiptModalBackdrop');
   if (!modal) return;
 
-  document.getElementById('receiptOrderNumber').textContent = order.orderNumber;
-  document.getElementById('receiptCustomerName').textContent = order.buyerName;
-  document.getElementById('receiptBusinessName').textContent = order.businessName;
-  document.getElementById('receiptPhone').textContent = order.buyerPhone;
-  document.getElementById('receiptAddress').textContent = order.fullAddress;
-  document.getElementById('receiptPaymentMethod').textContent = order.paymentMethod;
+  const orderNumEl = document.getElementById('receiptOrderNumber');
+  const customerNameEl = document.getElementById('receiptCustomerName');
+  const businessNameEl = document.getElementById('receiptBusinessName');
+  const phoneEl = document.getElementById('receiptPhone');
+  const addressEl = document.getElementById('receiptAddress');
+  const payMethodEl = document.getElementById('receiptPaymentMethod');
+
+  if (orderNumEl) orderNumEl.textContent = order.orderNumber;
+  if (customerNameEl) customerNameEl.textContent = order.buyerName || 'Direct Wholesale Buyer';
+  if (businessNameEl) businessNameEl.textContent = order.businessName || 'Wholesale Order';
+  if (phoneEl) phoneEl.textContent = order.buyerPhone || 'Direct via WhatsApp';
+  if (addressEl) addressEl.textContent = order.fullAddress || 'Indore Local Dispatch (Factory Hub)';
+  if (payMethodEl) payMethodEl.textContent = order.paymentMethod || 'Cash / UPI on Delivery';
 
   const zoneEl = document.getElementById('receiptZone');
   if (zoneEl) {
-    zoneEl.textContent = order.deliveryZoneLabel;
+    zoneEl.textContent = order.deliveryZoneLabel || 'Indore Local Dispatch';
     zoneEl.className = order.isLocal ? 'status-pill green' : 'status-pill orange';
   }
 
@@ -1247,24 +1393,45 @@ function showOrderReceipt(order) {
           </td>
           <td class="text-center">${escapeHtml(i.unit)}</td>
           <td class="text-center"><strong>${i.quantity}</strong></td>
-          <td class="text-right">₹${i.price.toLocaleString('en-IN')}</td>
-          <td class="text-right"><strong>₹${i.subtotal.toLocaleString('en-IN')}</strong></td>
+          <td class="text-right">₹${Number(i.price).toLocaleString('en-IN')}</td>
+          <td class="text-right"><strong>₹${Number(i.subtotal).toLocaleString('en-IN')}</strong></td>
         </tr>
       `
       )
       .join('');
   }
 
-  document.getElementById('receiptSubtotal').textContent = `₹${order.subtotal.toLocaleString('en-IN')}`;
-  document.getElementById('receiptDeliveryCharge').textContent =
-    order.deliveryCharge === 0 ? '₹0 (Free Local Dispatch)' : `+₹${order.deliveryCharge.toLocaleString('en-IN')}`;
-  document.getElementById('receiptGrandTotal').textContent = `₹${order.grandTotal.toLocaleString('en-IN')}`;
-  document.getElementById('receiptBarcodeText').textContent = `*${order.orderNumber}*`;
+  const subtotalEl = document.getElementById('receiptSubtotal');
+  const deliveryChargeEl = document.getElementById('receiptDeliveryCharge');
+  const grandTotalEl = document.getElementById('receiptGrandTotal');
+  const barcodeTextEl = document.getElementById('receiptBarcodeText');
 
+  if (subtotalEl) subtotalEl.textContent = `₹${Number(order.subtotal).toLocaleString('en-IN')}`;
+  if (deliveryChargeEl) {
+    deliveryChargeEl.textContent =
+      order.deliveryCharge === 0 ? '₹0 (Free Local Dispatch)' : `+₹${Number(order.deliveryCharge).toLocaleString('en-IN')}`;
+  }
+  if (grandTotalEl) grandTotalEl.textContent = `₹${Number(order.grandTotal).toLocaleString('en-IN')}`;
+  if (barcodeTextEl) barcodeTextEl.textContent = `*${order.orderNumber}*`;
+
+  const whatsappUrl = buildWhatsAppOrderUrl(order);
+
+  // Link for direct WhatsApp button in receipt actions
   const resendBtn = document.getElementById('btnReceiptWhatsApp');
   if (resendBtn) {
-    const directUrl = buildWhatsAppOrderUrl(order);
-    resendBtn.setAttribute('data-url', directUrl);
+    resendBtn.href = whatsappUrl;
+    resendBtn.onclick = function (e) {
+      redirectToWhatsApp(whatsappUrl);
+    };
+  }
+
+  // Link for top banner alert
+  const alertLink = document.getElementById('waDirectAlertLink');
+  if (alertLink) {
+    alertLink.href = whatsappUrl;
+    alertLink.onclick = function (e) {
+      redirectToWhatsApp(whatsappUrl);
+    };
   }
 
   modal.classList.add('active');

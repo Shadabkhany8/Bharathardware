@@ -30,10 +30,10 @@ const getDefaultApiUrl = (): string => {
 };
 
 export const Config = {
-  appName: 'Bharat Sponge',
+  appName: 'Bharat Hardware',
   tagline: 'Industrial & Hardware Wholesale (Indore, MP)',
   defaultApiUrl: getDefaultApiUrl(),
-  ownerName: 'Arbaz khan',
+  ownerName: 'Bharat Hardware',
   ownerPhone: '7869385515',
   supportPhone: '+91 7869385515',
   whatsappNumber: '917869385515',

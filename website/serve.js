@@ -41,5 +41,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Bharat Sponge Website running at http://localhost:${PORT}`);
+  console.log(`Bharat Hardware Website running at http://localhost:${PORT}`);
 });

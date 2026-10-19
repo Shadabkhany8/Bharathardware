@@ -50,11 +50,11 @@ export const AuthService = {
         existingData?.name ||
         user.displayName ||
         fallbackPayload?.name ||
-        (isAdmin ? 'Arbaz khan (Owner)' : 'Wholesale Dealer'),
+        (isAdmin ? 'Bharat Hardware (Owner)' : 'Wholesale Dealer'),
       businessName:
         existingData?.businessName ||
         fallbackPayload?.businessName ||
-        (isAdmin ? 'Bharat Sponge' : 'Retail Hardware Enterprise'),
+        (isAdmin ? 'Bharat Hardware' : 'Retail Hardware Enterprise'),
       phone:
         existingData?.phone ||
         user.phoneNumber ||
@@ -106,7 +106,7 @@ export const AuthService = {
           const newCredential = await createUserWithEmailAndPassword(auth, email, password);
           firebaseUser = newCredential.user;
           token = await firebaseUser.getIdToken();
-          const displayName = isAdminCredentials ? 'Arbaz khan (Owner)' : 'Demo Dealer';
+          const displayName = isAdminCredentials ? 'Bharat Hardware (Owner)' : 'Demo Dealer';
           await updateProfile(firebaseUser, { displayName });
         } catch {
           // If creation fails (e.g. email exists with diff password), rethrow original
@@ -133,8 +133,8 @@ export const AuthService = {
             const adminOffline: CustomerProfile = {
               id: 1,
               customerCode: 'ADMIN-01',
-              name: 'Arbaz khan (Owner)',
-              businessName: 'Bharat Sponge',
+              name: 'Bharat Hardware (Owner)',
+              businessName: 'Bharat Hardware',
               phone: Config.ownerPhone,
               email: ADMIN_EMAIL,
               address: 'Sanwer Road Industrial Area',

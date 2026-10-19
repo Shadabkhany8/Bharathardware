@@ -1,16 +1,16 @@
 /**
- * BHARAT SPONGE — B2B Wholesale Website Application Logic
+ * BHARAT HARDWARE — B2B Wholesale Website Application Logic
  * Factory Hub: Sanwer Road Industrial Area, Indore, MP
- * Owner / WhatsApp: Arbaz khan (+91 7869385515)
+ * WhatsApp / Phone: Bharat Hardware (+91 7869385515)
  */
 
 // ============================================================================
-// Catalog Data (Synchronized with Bharat Sponge Backend & Seed Data)
+// Catalog Data (Synchronized with Bharat Hardware Backend & Seed Data)
 // ============================================================================
 const CONFIG = {
-  appName: 'Bharat Sponge',
+  appName: 'Bharat Hardware',
   hub: 'Sanwer Road Industrial Area, Indore, MP',
-  ownerName: 'Arbaz khan',
+  ownerName: 'Bharat Hardware',
   ownerPhone: '7869385515',
   supportPhone: '+91 7869385515',
   whatsappNumber: '917869385515',
@@ -847,14 +847,14 @@ function createInvoiceDoc(order) {
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(20);
-  doc.text('BHARAT SPONGE', margin + 16, 44);
+  doc.text('BHARAT HARDWARE', margin + 16, 44);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
   doc.setTextColor(203, 213, 225);
-  doc.text('INDUSTRIAL ABRASIVE SPONGES & FINISHING TOOLS', margin + 16, 58);
+  doc.text('INDUSTRIAL HARDWARE, ABRASIVES & FINISHING TOOLS', margin + 16, 58);
   doc.text('Factory Hub: Sanwer Road Industrial Area, Sector B, Indore, MP 452015', margin + 16, 70);
-  doc.text('Owner / WhatsApp: Arbaz Khan | Mobile: +91 7869385515', margin + 16, 82);
+  doc.text('WhatsApp / Support: Bharat Hardware | Mobile: +91 7869385515', margin + 16, 82);
 
   // Right Header Badge
   doc.setFont('helvetica', 'bold');
@@ -1019,11 +1019,11 @@ function createInvoiceDoc(order) {
   doc.setFont('helvetica', 'italic');
   doc.setFontSize(8);
   doc.setTextColor(148, 163, 184);
-  doc.text('Bharat Sponge Wholesale Hub • Computer-generated commercial order bill', margin, footerY + 2);
+  doc.text('Bharat Hardware Wholesale Hub • Computer-generated commercial order bill', margin, footerY + 2);
 
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(71, 85, 105);
-  doc.text('For BHARAT SPONGE (Authorized Dispatch Desk)', pageWidth - margin, footerY + 2, { align: 'right' });
+  doc.text('For BHARAT HARDWARE (Authorized Dispatch Desk)', pageWidth - margin, footerY + 2, { align: 'right' });
 
   return doc;
 }
@@ -1034,7 +1034,7 @@ function generateAndDownloadInvoicePDF(order) {
     const doc = createInvoiceDoc(order);
     if (!doc) return false;
 
-    const filename = `BharatSponge_Invoice_${order.orderNumber}.pdf`;
+    const filename = `BharatHardware_Invoice_${order.orderNumber}.pdf`;
     try {
       doc.save(filename);
     } catch (saveErr) {
@@ -1116,9 +1116,9 @@ function buildWhatsAppOrderUrl(order) {
   });
 
   const lines = [
-    `🧾 *BHARAT SPONGE — WHOLESALE INVOICE BILL*`,
+    `🧾 *BHARAT HARDWARE — WHOLESALE INVOICE BILL*`,
     `🏭 *Sanwer Road Industrial Area, Indore (M.P.)*`,
-    `👤 *Owner:* ${CONFIG.ownerName} (📞 +91 ${CONFIG.ownerPhone})`,
+    `👤 *Store:* Bharat Hardware (📞 +91 ${CONFIG.ownerPhone})`,
     `━━━━━━━━━━━━━━━━━━━━━━━━━`,
     `📋 *Invoice / Bill No:* *${order.orderNumber}*`,
     `📅 *Date & Time:* ${dateStr}`,
@@ -1155,10 +1155,10 @@ function buildWhatsAppOrderUrl(order) {
   lines.push(`📄 *OFFICIAL WHOLESALE PDF BILL:*`);
   lines.push(`🔗 *View & Download Official PDF Online:*`);
   lines.push(`${billShareUrl}`);
-  lines.push(`📁 *Saved on device:* \`BharatSponge_Invoice_${order.orderNumber}.pdf\``);
+  lines.push(`📁 *Saved on device:* \`BharatHardware_Invoice_${order.orderNumber}.pdf\``);
   lines.push(`📎 *(To send actual PDF in chat: tap 📎 Document & select file)*`);
   lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━`);
-  lines.push(`🙏 *Arbaz bhai, please confirm wholesale stock & dispatch schedule.*`);
+  lines.push(`🙏 *Bharat Hardware team, please confirm wholesale stock & dispatch schedule.*`);
 
   const fullText = lines.join('\n');
   return `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(fullText)}`;
@@ -1170,7 +1170,7 @@ async function shareOrderNativeOrWhatsApp(order) {
 
   // 1. Ensure PDF is generated and downloaded to device
   const doc = createInvoiceDoc(order);
-  const filename = `BharatSponge_Invoice_${order.orderNumber}.pdf`;
+  const filename = `BharatHardware_Invoice_${order.orderNumber}.pdf`;
   if (doc) {
     try {
       doc.save(filename);
@@ -1181,7 +1181,7 @@ async function shareOrderNativeOrWhatsApp(order) {
   }
 
   const billUrl = createBillShareUrl(order);
-  const waSummary = `🧾 *Bharat Sponge Wholesale Bill #${order.orderNumber}*\n🏭 Sanwer Road Industrial Area, Indore (M.P.)\n👤 Owner: Arbaz khan (+91 7869385515)\n💰 Net Total: ₹${Number(order.grandTotal).toLocaleString('en-IN')}\n📄 View / Download Online PDF Bill:\n${billUrl}`;
+  const waSummary = `🧾 *Bharat Hardware Wholesale Bill #${order.orderNumber}*\n🏭 Sanwer Road Industrial Area, Indore (M.P.)\n👤 Store: Bharat Hardware (+91 7869385515)\n💰 Net Total: ₹${Number(order.grandTotal).toLocaleString('en-IN')}\n📄 View / Download Online PDF Bill:\n${billUrl}`;
 
   // 2. Check if browser supports sharing native files (Android Chrome, iOS Safari)
   if (doc && typeof File !== 'undefined' && navigator.canShare) {
@@ -1193,7 +1193,7 @@ async function shareOrderNativeOrWhatsApp(order) {
         try {
           await navigator.share({
             files: [pdfFile],
-            title: `Bharat Sponge - Bill #${order.orderNumber}`,
+            title: `Bharat Hardware - Bill #${order.orderNumber}`,
             text: waSummary,
           });
           showToast(`PDF Bill #${order.orderNumber} shared successfully!`);
@@ -1471,21 +1471,23 @@ function showOrderReceipt(order) {
     zoneEl.className = order.isLocal ? 'status-pill green' : 'status-pill orange';
   }
 
-  // Items table
+  // Items table (Compact 3-column format)
   const tbody = document.getElementById('receiptItemsBody');
   if (tbody) {
     tbody.innerHTML = order.items
       .map(
         (i) => `
-        <tr>
-          <td>
-            <strong>${escapeHtml(i.name)}</strong><br />
-            <span style="font-family: var(--font-mono); font-size: 0.7rem; color: #64748b;">${i.sku}</span>
+        <tr style="border-bottom: 1px solid #f1f5f9;">
+          <td style="padding: 0.45rem 0.5rem;">
+            <strong style="color: #0f172a; font-size: 0.8rem;">${escapeHtml(i.name)}</strong><br />
+            <span style="font-family: var(--font-mono); font-size: 0.68rem; color: #64748b;">${i.sku}</span>
           </td>
-          <td class="text-center">${escapeHtml(i.unit)}</td>
-          <td class="text-center"><strong>${i.quantity}</strong></td>
-          <td class="text-right">₹${Number(i.price).toLocaleString('en-IN')}</td>
-          <td class="text-right"><strong>₹${Number(i.subtotal).toLocaleString('en-IN')}</strong></td>
+          <td class="text-center" style="padding: 0.45rem 0.3rem; white-space: nowrap;">
+            <strong>${i.quantity}</strong> <span style="font-size: 0.68rem; color: #64748b;">${escapeHtml(i.unit)}</span>
+          </td>
+          <td class="text-right" style="padding: 0.45rem 0.5rem; font-weight: 700; color: #0f172a; white-space: nowrap;">
+            ₹${Number(i.subtotal).toLocaleString('en-IN')}
+          </td>
         </tr>
       `
       )
@@ -1535,7 +1537,17 @@ function resendReceiptToWhatsApp() {
   redirectToWhatsApp(url);
 }
 
-function closeReceiptModal() {
+function closeReceiptModal(e) {
+  if (
+    e &&
+    e.target &&
+    e.target !== e.currentTarget &&
+    !e.target.closest('.btn-modal-close') &&
+    !e.target.closest('.btn-close-receipt') &&
+    !e.target.closest('.btn-secondary')
+  ) {
+    return;
+  }
   const modal = document.getElementById('receiptModalBackdrop');
   if (modal) modal.classList.remove('active');
   document.body.style.overflow = '';
@@ -1549,8 +1561,8 @@ function shareCatalogLink() {
   if (navigator.share) {
     navigator
       .share({
-        title: 'Bharat Sponge — Wholesale Catalog',
-        text: 'Direct Factory Wholesale Rates on Abrasive Sponges & Finishing Pads from Indore, MP:',
+        title: 'Bharat Hardware — Wholesale Catalog',
+        text: 'Direct Factory Wholesale Rates on Industrial Hardware & Abrasives from Indore, MP:',
         url: url,
       })
       .catch(() => copyToClipboard(url));

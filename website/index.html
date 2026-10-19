@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Bharat Sponge — B2B Hardware & Abrasive Wholesale | Indore, MP</title>
+  <title>Bharat Hardware — B2B Hardware Wholesale | Indore, MP</title>
   <meta name="description"
-    content="Direct factory wholesale ordering for Bharat Sponge abrasive foam, polishing pads, scouring blocks and industrial finishing tools. Direct WhatsApp ordering & factory dispatch from Indore, MP." />
+    content="Direct factory wholesale ordering for Bharat Hardware abrasive foam, polishing pads, scouring blocks and industrial supplies. Direct WhatsApp ordering & factory dispatch from Indore, MP." />
   <meta name="theme-color" content="#0F172A" />
 
   <!-- Google Fonts -->
@@ -17,7 +17,7 @@
     rel="stylesheet" />
 
   <!-- Main Stylesheet with Cache Busting -->
-  <link rel="stylesheet" href="style.css?v=20261019_1702" />
+  <link rel="stylesheet" href="style.css?v=20261019_1720" />
 
   <!-- Critical Mobile 2-Column Grid (Guarantees 4-Cards in viewport on all phones, immune to CSS cache) -->
   <style>
@@ -212,7 +212,7 @@
           </svg>
         </div>
         <div class="brand-text">
-          <div class="brand-title">BHARAT SPONGE <span class="badge-b2b">B2B</span></div>
+          <div class="brand-title">BHARAT HARDWARE <span class="badge-b2b">B2B</span></div>
           <div class="brand-sub">Industrial Hardware Wholesale • Indore</div>
         </div>
       </a>
@@ -233,7 +233,7 @@
       <!-- Action Badges -->
       <div class="header-actions">
         <!-- Direct WhatsApp Contact Button -->
-        <a href="https://wa.me/917869385515?text=Hello%20Bharat%20Sponge%2C%20I%20want%20to%20inquire%20about%20wholesale%20abrasive%20products."
+        <a href="https://wa.me/917869385515?text=Hello%20Bharat%20Hardware%2C%20I%20want%20to%20inquire%20about%20wholesale%20rates."
           target="_blank" rel="noopener noreferrer" class="btn-whatsapp-header" title="Chat on WhatsApp">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
             <path
@@ -618,7 +618,7 @@
                 </svg>
                 <div class="btn-whatsapp-text">
                   <span class="main-title">Place Order via WhatsApp</span>
-                  <span class="sub-title">Sends full bill directly to Arbaz Khan (+91 7869385515)</span>
+                  <span class="sub-title">Sends full bill directly to Bharat Hardware (+91 7869385515)</span>
                 </div>
               </button>
 
@@ -632,90 +632,64 @@
     </div>
   </div>
 
-  <!-- Order Success Receipt Modal -->
-  <div class="modal-backdrop" id="receiptModalBackdrop">
+  <!-- Order Success Receipt Modal (Short, Clean & with Close Button) -->
+  <div class="modal-backdrop" id="receiptModalBackdrop" onclick="closeReceiptModal(event)">
     <div class="modal-card receipt-modal">
+      <!-- Cross / Close Button (prominent at top right) -->
+      <button type="button" class="btn-modal-close receipt-close-btn" onclick="closeReceiptModal()" aria-label="Close Bill" title="Close Bill">&times;</button>
+
       <div class="receipt-card-wrapper printable-area" id="printableReceipt">
-        <!-- Success Icon -->
-        <div class="receipt-success-badge">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3">
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-        </div>
-
-        <h2 class="receipt-title">Bill Generated &amp; Order Placed!</h2>
-        <p class="receipt-subtitle">Your wholesale hardware bill is generated as a PDF and ready to send to Arbaz Khan (+91 7869385515) on WhatsApp.</p>
-
-        <!-- Unmissable WhatsApp Alert Banner -->
-        <div class="whatsapp-direct-alert" id="waDirectAlert">
-          <div class="wa-alert-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="#25D366">
-              <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.41 1.56 1.56 2.41 3.62 2.41 5.83 0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.188 8.188 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.07-.39-2.03-1.25-.75-.67-1.26-1.5-1.41-1.75-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.87.85-.87 2.08s.89 2.41 1.02 2.58c.13.17 1.75 2.67 4.24 3.75.59.26 1.05.41 1.42.53.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z"/>
+        <!-- Compact Success Header -->
+        <div class="receipt-header-compact">
+          <div class="receipt-badge-mini">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3">
+              <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
-          <div class="wa-alert-body">
-            <strong>✅ Invoice Bill PDF Generated &amp; Downloaded!</strong>
-            <p>Your official wholesale PDF bill is saved in your device Downloads. Send it to <strong>Arbaz Khan (+91 7869385515)</strong>:</p>
-            <div class="wa-alert-actions">
-              <button class="btn-wa-alert-link" onclick="shareCurrentOrderPdf()">
-                📲 Share PDF File directly to WhatsApp
-              </button>
-              <a href="#" id="waDirectAlertLink" target="_blank" rel="noopener noreferrer" class="btn-wa-alert-outline">
-                💬 Open WhatsApp Chat
-              </a>
-            </div>
-            <div class="wa-help-hint">
-              <span>💡 <strong>To attach PDF in WhatsApp:</strong> Tap <strong>📎 (Paperclip / Plus)</strong> in chat &rarr; <strong>Document</strong> &rarr; Select the downloaded PDF file.</span>
+          <div>
+            <h2 class="receipt-title-clean">Bill Generated &amp; Order Placed!</h2>
+            <div class="receipt-order-tag">
+              Invoice No: <strong id="receiptOrderNumber">BS-2026-000001</strong>
             </div>
           </div>
         </div>
 
-        <!-- Perforated Receipt Box -->
-        <div class="perforated-receipt">
+        <!-- 1-Click Primary Action Buttons -->
+        <div class="receipt-primary-actions">
+          <button type="button" id="btnReceiptWhatsApp" class="btn-share-pdf-wa" onclick="shareCurrentOrderPdf()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.41 1.56 1.56 2.41 3.62 2.41 5.83 0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.188 8.188 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.07-.39-2.03-1.25-.75-.67-1.26-1.5-1.41-1.75-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.87.85-.87 2.08s.89 2.41 1.02 2.58c.13.17 1.75 2.67 4.24 3.75.59.26 1.05.41 1.42.53.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z"/>
+            </svg>
+            <span>📲 Send to WhatsApp</span>
+          </button>
+          <button type="button" class="btn-download-pdf" onclick="downloadCurrentOrderPDF()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            <span>📥 Download PDF</span>
+          </button>
+        </div>
+
+        <!-- Clean Perforated Bill Sheet -->
+        <div class="perforated-receipt clean-receipt">
           <div class="receipt-header-row">
             <div>
-              <div class="receipt-brand">BHARAT SPONGE</div>
-              <div class="receipt-hub-tag">Sanwer Road Industrial Area, Indore, MP</div>
+              <div class="receipt-brand">BHARAT HARDWARE</div>
+              <div class="receipt-hub-tag">Sanwer Road Industrial Area, Indore (M.P.)</div>
             </div>
             <div class="receipt-order-badge">
-              <span class="badge-label">Order No.</span>
-              <span class="order-num" id="receiptOrderNumber">BS-2026-000001</span>
-            </div>
-          </div>
-
-          <div class="receipt-meta-grid">
-            <div class="meta-item">
-              <span class="meta-label">Customer / Shop</span>
-              <strong id="receiptCustomerName">Direct Wholesale Buyer</strong>
-              <span id="receiptBusinessName" class="meta-sub">Wholesale Order</span>
-            </div>
-            <div class="meta-item">
-              <span class="meta-label">Contact Channel</span>
-              <strong id="receiptPhone">Direct via WhatsApp</strong>
-            </div>
-            <div class="meta-item">
-              <span class="meta-label">Delivery Zone</span>
               <span id="receiptZone" class="status-pill green">Indore Local Dispatch</span>
             </div>
-            <div class="meta-item">
-              <span class="meta-label">Settlement Mode</span>
-              <strong id="receiptPaymentMethod">CASH / UPI</strong>
-            </div>
           </div>
 
-          <div class="meta-full-address">
-            <span class="meta-label">Dispatch Destination:</span>
-            <p id="receiptAddress">Indore Local Dispatch (Factory Hub)</p>
-          </div>
-
-          <!-- Items Table -->
+          <!-- Items Table (3-column compact) -->
           <table class="receipt-items-table">
             <thead>
               <tr>
-                <th>Item &amp; SKU</th>
-                <th class="text-center">Unit</th>
+                <th>Item Description</th>
                 <th class="text-center">Qty</th>
-                <th class="text-right">Price</th>
                 <th class="text-right">Total</th>
               </tr>
             </thead>
@@ -727,72 +701,29 @@
           <!-- Financial Breakdown -->
           <div class="receipt-financials">
             <div class="financial-row">
-              <span>Wholesale Items Subtotal:</span>
+              <span>Subtotal:</span>
               <span id="receiptSubtotal">₹0</span>
             </div>
             <div class="financial-row">
-              <span>Transport / Delivery Surcharge:</span>
+              <span>Delivery:</span>
               <span id="receiptDeliveryCharge">₹0 (Free Local Dispatch)</span>
             </div>
             <div class="financial-row grand-total">
-              <span>Grand Total Amount:</span>
+              <span>Net Total Amount:</span>
               <span id="receiptGrandTotal">₹0</span>
             </div>
           </div>
 
-          <!-- Barcode Simulation -->
-          <div class="barcode-container">
-            <div class="barcode-bars">
-              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-            </div>
-            <div class="barcode-code" id="receiptBarcodeText">*BS-2026-000001*</div>
-          </div>
-
           <div class="receipt-footer-notes">
-            <p><strong>Payment Notice:</strong> Wholesale payment is settled offline upon delivery or dispatch counter.</p>
-            <p><strong>Factory Hub:</strong> Sanwer Road Industrial Area, Indore, MP • Owner: Arbaz khan (📞 +91 7869385515)</p>
+            <p><strong>Factory Hub:</strong> Sanwer Road Industrial Area, Indore, MP • <strong>Contact:</strong> Bharat Hardware (📞 +91 7869385515)</p>
           </div>
         </div>
       </div>
 
       <!-- Action Buttons for Receipt -->
       <div class="receipt-actions-bar">
-        <button class="btn-share-pdf-wa" onclick="shareCurrentOrderPdf()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.41 1.56 1.56 2.41 3.62 2.41 5.83 0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.188 8.188 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.07-.39-2.03-1.25-.75-.67-1.26-1.5-1.41-1.75-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.87.85-.87 2.08s.89 2.41 1.02 2.58c.13.17 1.75 2.67 4.24 3.75.59.26 1.05.41 1.42.53.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z" />
-          </svg>
-          <span>📲 Share PDF Document to WhatsApp</span>
-        </button>
-
-        <a class="btn-whatsapp-receipt" id="btnReceiptWhatsApp" href="#" target="_blank" rel="noopener noreferrer">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.41 1.56 1.56 2.41 3.62 2.41 5.83 0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.188 8.188 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.07-.39-2.03-1.25-.75-.67-1.26-1.5-1.41-1.75-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.87.85-.87 2.08s.89 2.41 1.02 2.58c.13.17 1.75 2.67 4.24 3.75.59.26 1.05.41 1.42.53.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z" />
-          </svg>
-          <span>Send / Open in WhatsApp</span>
-        </a>
-
-        <button class="btn-download-pdf" onclick="downloadCurrentOrderPDF()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" y1="15" x2="12" y2="3" />
-          </svg>
-          <span>Download PDF Again</span>
-        </button>
-
-        <button class="btn-print" onclick="window.print()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="6 9 6 2 18 2 18 9" />
-            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-            <rect x="6" y="14" width="12" height="8" />
-          </svg>
-          <span>Print / Save PDF</span>
-        </button>
-
-        <button class="btn-secondary" onclick="closeReceiptModal()">
-          <span>Continue Shopping</span>
+        <button type="button" class="btn-close-receipt" onclick="closeReceiptModal()">
+          ✕ Close / Continue Shopping
         </button>
       </div>
     </div>
@@ -805,7 +736,7 @@
   <footer class="site-footer">
     <div class="container footer-content">
       <div class="footer-col brand-col">
-        <div class="brand-title-footer">BHARAT SPONGE</div>
+        <div class="brand-title-footer">BHARAT HARDWARE</div>
         <p class="footer-desc">
           Premier B2B wholesale supplier of industrial abrasive foam sponges, polishing pads, scouring blocks, and
           surface prep tooling. Factory operations located in Indore, Madhya Pradesh.
@@ -813,7 +744,7 @@
         <div class="footer-contact-info">
           <div>📍 Sanwer Road Industrial Area, Sector B, Indore, MP 452015</div>
           <div>📞 Direct Wholesale Line: <a href="tel:7869385515">+91 7869385515</a></div>
-          <div>👤 Contact Person: Arbaz khan</div>
+          <div>🏢 Contact: Bharat Hardware (+91 7869385515)</div>
         </div>
       </div>
 
@@ -841,14 +772,14 @@
     </div>
     <div class="footer-bottom">
       <div class="container bottom-flex">
-        <span>&copy; 2026 Bharat Sponge Enterprises. All rights reserved.</span>
+        <span>&copy; 2026 Bharat Hardware Enterprises. All rights reserved.</span>
         <span>Wholesale Operations: Indore, MP</span>
       </div>
     </div>
   </footer>
 
   <!-- Application Logic with Cache Busting -->
-  <script src="app.js?v=20261019_1702"></script>
+  <script src="app.js?v=20261019_1720"></script>
 </body>
 
 </html>

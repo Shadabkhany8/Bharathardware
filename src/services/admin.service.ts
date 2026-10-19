@@ -175,8 +175,8 @@ export const AdminService = {
         {
           id: 2,
           customerCode: 'ADMIN-01',
-          name: 'Arbaz khan (Owner)',
-          businessName: 'Bharat Sponge Wholesale',
+          name: 'Bharat Hardware (Owner)',
+          businessName: 'Bharat Hardware Wholesale',
           phone: '7869385515',
           email: 'bharatsponge@gmail.com',
           address: 'Sanwer Road Industrial Area',

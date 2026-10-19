@@ -17,9 +17,9 @@
     rel="stylesheet" />
 
   <!-- Main Stylesheet with Cache Busting -->
-  <link rel="stylesheet" href="style.css?v=20261019_1720" />
+  <link rel="stylesheet" href="style.css?v=20261019_1740" />
 
-  <!-- Critical Mobile 2-Column Grid (Guarantees 4-Cards in viewport on all phones, immune to CSS cache) -->
+  <!-- Critical Mobile 2-Column Grid & UI Enhancements -->
   <style>
     @media (max-width: 900px) {
       .container {
@@ -31,17 +31,24 @@
       .product-grid {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
-        gap: 0.55rem !important;
+        gap: 0.6rem !important;
       }
       .product-card {
-        border-radius: 10px !important;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06) !important;
+        border-radius: 12px !important;
+        border: 1px solid #e2e8f0 !important;
+        background: #ffffff !important;
+        box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.06) !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
       }
       .product-card:hover {
         transform: none !important;
       }
       .product-image-container {
         height: 125px !important;
+        background: #f8fafc !important;
+        position: relative !important;
       }
       .card-top-badges {
         top: 6px !important;
@@ -50,71 +57,134 @@
       }
       .sku-badge {
         font-size: 0.55rem !important;
-        padding: 0.15rem 0.35rem !important;
-        border-radius: 3px !important;
+        font-family: monospace !important;
+        background: rgba(15, 23, 42, 0.8) !important;
+        color: #ffffff !important;
+        padding: 0.15rem 0.4rem !important;
+        border-radius: 4px !important;
+        backdrop-filter: blur(4px) !important;
       }
       .moq-badge {
         font-size: 0.58rem !important;
-        padding: 0.15rem 0.4rem !important;
+        font-weight: 700 !important;
+        background: #ea580c !important;
+        color: #ffffff !important;
+        padding: 0.15rem 0.45rem !important;
+        border-radius: 4px !important;
       }
       .card-body {
-        padding: 0.5rem 0.45rem !important;
+        padding: 0.55rem 0.5rem !important;
+        display: flex !important;
+        flex-direction: column !important;
+        flex: 1 !important;
       }
       .product-category-tag {
-        font-size: 0.58rem !important;
+        font-size: 0.55rem !important;
+        font-weight: 700 !important;
+        color: #ea580c !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
         margin-bottom: 0.15rem !important;
       }
       .product-title {
-        font-size: 0.8rem !important;
+        font-size: 0.78rem !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
         line-height: 1.25 !important;
-        min-height: 2.05rem !important;
-        margin-bottom: 0.25rem !important;
+        min-height: 1.95rem !important;
+        margin-bottom: 0.35rem !important;
+        display: -webkit-box !important;
         -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
       }
       .product-desc {
         display: none !important;
       }
-      .pricing-box {
-        padding: 0.35rem 0.45rem !important;
-        margin-bottom: 0.35rem !important;
-        border-radius: 6px !important;
+      .card-price-row {
+        display: flex !important;
+        align-items: baseline !important;
+        gap: 0.2rem !important;
+        margin-bottom: 0.15rem !important;
       }
-      .unit-label {
-        font-size: 0.6rem !important;
+      .wholesale-price {
+        font-size: 1.1rem !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
+        font-family: var(--font-mono) !important;
+      }
+      .price-unit-tag {
+        font-size: 0.62rem !important;
+        font-weight: 600 !important;
+        color: #64748b !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
       }
-      .price-row {
-        margin-top: 0.1rem !important;
+      .stock-status-row {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.3rem !important;
+        margin-bottom: 0.45rem !important;
       }
-      .wholesale-price {
-        font-size: 1.05rem !important;
+      .stock-dot {
+        width: 6px !important;
+        height: 6px !important;
+        border-radius: 50% !important;
+        background: #10b981 !important;
+        display: inline-block !important;
       }
-      .stock-status {
+      .stock-text {
         font-size: 0.58rem !important;
+        font-weight: 600 !important;
+        color: #059669 !important;
       }
       .card-actions {
-        gap: 0.3rem !important;
+        margin-top: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.35rem !important;
       }
       .stepper-row {
-        margin-bottom: 0.25rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
       }
       .stepper-label {
         font-size: 0.62rem !important;
+        font-weight: 600 !important;
+        color: #64748b !important;
       }
       .stepper-control {
+        display: inline-flex !important;
+        align-items: center !important;
+        border: 1px solid #cbd5e1 !important;
         border-radius: 6px !important;
+        overflow: hidden !important;
+        background: #ffffff !important;
       }
       .stepper-btn {
         width: 26px !important;
         height: 26px !important;
         font-size: 0.85rem !important;
+        font-weight: 700 !important;
+        background: #f1f5f9 !important;
+        border: none !important;
+        color: #0f172a !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
       }
       .stepper-input {
         width: 30px !important;
         height: 26px !important;
         font-size: 0.75rem !important;
+        font-weight: 700 !important;
+        text-align: center !important;
+        border: none !important;
+        background: transparent !important;
+        color: #0f172a !important;
       }
       .card-btn-group {
         display: grid !important;
@@ -124,28 +194,48 @@
       .btn-add-cart,
       .btn-quick-whatsapp {
         width: 100% !important;
-        padding: 0.45rem 0.2rem !important;
+        height: 30px !important;
+        padding: 0 !important;
         font-size: 0.68rem !important;
-        gap: 0.2rem !important;
+        font-weight: 700 !important;
+        gap: 0.25rem !important;
         border-radius: 6px !important;
+        display: flex !important;
+        align-items: center !important;
         justify-content: center !important;
+        cursor: pointer !important;
         text-align: center !important;
+        border: none !important;
+      }
+      .btn-add-cart {
+        background: #0f172a !important;
+        color: #ffffff !important;
+      }
+      .btn-add-cart.is-added {
+        background: #059669 !important;
+      }
+      .btn-quick-whatsapp {
+        background: #25d366 !important;
+        color: #ffffff !important;
       }
       .btn-add-cart svg,
       .btn-quick-whatsapp svg {
-        width: 13px !important;
-        height: 13px !important;
+        width: 12px !important;
+        height: 12px !important;
         flex-shrink: 0 !important;
       }
-      .btn-text-full {
-        display: none !important;
-      }
-      .btn-text-compact {
-        display: inline !important;
-        font-weight: 700 !important;
-      }
       .mobile-sticky-cart-bar {
+        display: none !important;
+        z-index: 90 !important;
+      }
+      .mobile-sticky-cart-bar.has-items {
         display: flex !important;
+      }
+      body.drawer-open .mobile-sticky-cart-bar,
+      body.modal-open .mobile-sticky-cart-bar {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
       }
     }
     @media (max-width: 360px) {
@@ -161,7 +251,7 @@
       .btn-add-cart,
       .btn-quick-whatsapp {
         font-size: 0.62rem !important;
-        padding: 0.4rem 0.15rem !important;
+        height: 28px !important;
       }
     }
   </style>
@@ -379,10 +469,9 @@
 
     <!-- Free Delivery Notice in Indore -->
     <div class="cart-delivery-banner">
-      <div class="delivery-banner-icon">🚚</div>
-      <div class="delivery-banner-text">
-        <strong>Direct Indore Hub:</strong> Free delivery within Indore city limits. Flat ₹250 for outside Indore
-        dispatch.
+      <div class="delivery-banner-pill">
+        <span class="delivery-badge-chip">FREE DELIVERY</span>
+        <span class="delivery-banner-text">Indore Local Dispatch • ₹250 Outside MP</span>
       </div>
     </div>
 
@@ -399,52 +488,53 @@
           <span id="cartTotalUnits">0 units</span>
         </div>
         <div class="summary-line">
-          <span>Estimated Delivery</span>
-          <span class="free-text">₹0 (Indore Hub)</span>
+          <span>Delivery Charge</span>
+          <span class="free-text">FREE (Indore Hub)</span>
         </div>
         <div class="summary-line grand-total">
-          <span>Subtotal Amount</span>
+          <span>Total Payable</span>
           <span class="total-price" id="cartDrawerTotal">₹0</span>
         </div>
       </div>
 
       <div class="cart-drawer-actions">
-        <!-- Direct Bill PDF Generation & WhatsApp Dispatch (Zero Form Filling Required) -->
+        <!-- Direct Bill PDF Generation & WhatsApp Dispatch -->
         <button class="btn-cart-whatsapp" id="btnCartDirectWhatsapp" onclick="directCartWhatsAppOrder()">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
             <path
               d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.41 1.56 1.56 2.41 3.62 2.41 5.83 0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.188 8.188 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.07-.39-2.03-1.25-.75-.67-1.26-1.5-1.41-1.75-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.87.85-.87 2.08s.89 2.41 1.02 2.58c.13.17 1.75 2.67 4.24 3.75.59.26 1.05.41 1.42.53.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z" />
           </svg>
           <div class="btn-cart-whatsapp-content">
-            <span class="btn-cart-whatsapp-title">📄 Generate Bill (PDF) &amp; Send to WhatsApp</span>
-            <span class="btn-cart-whatsapp-sub">Auto-Generates PDF • No Form Needed • Opens WhatsApp</span>
+            <span class="btn-cart-whatsapp-title">Place Order &amp; WhatsApp Bill</span>
+            <span class="btn-cart-whatsapp-sub">Instant 1-Click Wholesale Dispatch</span>
           </div>
         </button>
 
         <!-- Optional Shop Name or Dispatch Remarks (100% Optional) -->
         <div class="cart-optional-box">
-          <input type="text" id="cartOptionalNote" placeholder="Shop Name / Note (Optional - not required)..." />
+          <input type="text" id="cartOptionalNote" placeholder="Shop Name / Remarks (Optional)..." />
         </div>
 
-        <button class="btn-view-bill-only" id="btnCartPdfOnly" onclick="directCartGenerateBillOnly()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <line x1="16" y1="13" x2="8" y2="13"></line>
-            <line x1="16" y1="17" x2="8" y2="17"></line>
-            <polyline points="10 9 9 9 8 9"></polyline>
-          </svg>
-          <span>Download PDF Invoice Only</span>
-        </button>
+        <div class="cart-secondary-actions">
+          <button class="btn-view-bill-only" id="btnCartPdfOnly" onclick="directCartGenerateBillOnly()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            <span>Download PDF Only</span>
+          </button>
 
-        <button class="btn-clear-cart" onclick="clearCart()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 6h18" />
-            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-          </svg>
-          Clear Cart
-        </button>
+          <button class="btn-clear-cart" onclick="clearCart()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 6h18" />
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+            </svg>
+            <span>Clear</span>
+          </button>
+        </div>
       </div>
     </div>
   </aside>
@@ -660,7 +750,7 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.41 1.56 1.56 2.41 3.62 2.41 5.83 0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.188 8.188 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.07-.39-2.03-1.25-.75-.67-1.26-1.5-1.41-1.75-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.87.85-.87 2.08s.89 2.41 1.02 2.58c.13.17 1.75 2.67 4.24 3.75.59.26 1.05.41 1.42.53.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z"/>
             </svg>
-            <span>📲 Send to WhatsApp</span>
+            <span>Send to WhatsApp</span>
           </button>
           <button type="button" class="btn-download-pdf" onclick="downloadCurrentOrderPDF()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -668,7 +758,7 @@
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
-            <span>📥 Download PDF</span>
+            <span>Download PDF</span>
           </button>
         </div>
 
@@ -779,7 +869,7 @@
   </footer>
 
   <!-- Application Logic with Cache Busting -->
-  <script src="app.js?v=20261019_1720"></script>
+  <script src="app.js?v=20261019_1740"></script>
 </body>
 
 </html>

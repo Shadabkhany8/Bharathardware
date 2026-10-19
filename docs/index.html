@@ -17,7 +17,7 @@
     rel="stylesheet" />
 
   <!-- Main Stylesheet with Cache Busting -->
-  <link rel="stylesheet" href="style.css?v=20261019_1740" />
+  <link rel="stylesheet" href="style.css?v=20261019_1835" />
 
   <!-- Critical Mobile 2-Column Grid & UI Enhancements -->
   <style>
@@ -237,38 +237,379 @@
         visibility: hidden !important;
         pointer-events: none !important;
       }
+      /* ==========================================================================
+         PRODUCT DETAIL BOTTOM SHEET (Bulletproof Inlined Styles)
+         ========================================================================== */
       .modal-backdrop.sheet-mode {
+        position: fixed !important;
+        inset: 0 !important;
+        background: rgba(15, 23, 42, 0.65) !important;
+        backdrop-filter: blur(4px) !important;
+        -webkit-backdrop-filter: blur(4px) !important;
+        z-index: 2500 !important;
+        display: flex !important;
         align-items: flex-end !important;
+        justify-content: center !important;
         padding: 0 !important;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease !important;
+      }
+      .modal-backdrop.sheet-mode.active {
+        opacity: 1 !important;
+        pointer-events: auto !important;
       }
       .modal-backdrop.sheet-mode .product-sheet-card {
-        border-radius: 22px 22px 0 0 !important;
-        max-height: 88vh !important;
+        background: #ffffff !important;
         width: 100% !important;
-        max-width: 100% !important;
+        max-width: 620px !important;
+        max-height: 88vh !important;
+        border-radius: 22px 22px 0 0 !important;
+        box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+        position: relative !important;
         margin: 0 !important;
-        animation: sheetSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        animation: sheetSlideUpAnim 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
       }
-      .modal-prod-img-box {
-        height: 190px !important;
-        margin-bottom: 0.75rem !important;
-      }
-      .modal-sheet-scrollable {
-        padding: 0.4rem 1rem 0.75rem 1rem !important;
-      }
-      .modal-sheet-title {
-        font-size: 1.1rem !important;
-      }
-      .modal-sticky-footer {
-        padding: 0.65rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 10px)) 1rem !important;
-      }
-      .modal-action-buttons {
-        grid-template-columns: 1fr 1.35fr !important;
-        gap: 0.4rem !important;
-      }
-      @keyframes sheetSlideUp {
+      @keyframes sheetSlideUpAnim {
         from { transform: translateY(100%); }
         to { transform: translateY(0); }
+      }
+      .modal-prod-sheet {
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100% !important;
+        max-height: 88vh !important;
+        overflow: hidden !important;
+        position: relative !important;
+      }
+      .sheet-header-bar {
+        height: 48px !important;
+        min-height: 48px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        position: relative !important;
+        padding: 0 16px !important;
+        background: #ffffff !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+        flex-shrink: 0 !important;
+        z-index: 50 !important;
+      }
+      .modal-drag-pill {
+        width: 44px !important;
+        height: 5px !important;
+        background: #cbd5e1 !important;
+        border-radius: 999px !important;
+        margin: 0 auto !important;
+      }
+      .btn-sheet-close {
+        position: absolute !important;
+        right: 14px !important;
+        top: 7px !important;
+        width: 34px !important;
+        height: 34px !important;
+        border-radius: 50% !important;
+        background: #f1f5f9 !important;
+        border: 1px solid #e2e8f0 !important;
+        color: #334155 !important;
+        font-size: 16px !important;
+        font-weight: 800 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
+        transition: all 0.15s ease !important;
+        line-height: 1 !important;
+        padding: 0 !important;
+        z-index: 60 !important;
+      }
+      .btn-sheet-close:hover,
+      .btn-sheet-close:active {
+        background: #e2e8f0 !important;
+        color: #0f172a !important;
+        transform: scale(0.94) !important;
+      }
+      .modal-sheet-scrollable {
+        flex: 1 !important;
+        overflow-y: auto !important;
+        padding: 14px 16px 20px 16px !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      .sheet-img-wrap {
+        width: 100% !important;
+        height: 200px !important;
+        border-radius: 14px !important;
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        overflow: hidden !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin-bottom: 12px !important;
+      }
+      .sheet-img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
+        padding: 6px !important;
+        display: block !important;
+      }
+      .sheet-category-tag {
+        font-size: 0.72rem !important;
+        font-weight: 800 !important;
+        color: #ea580c !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        margin-bottom: 4px !important;
+        display: block !important;
+      }
+      .sheet-product-title {
+        font-size: 1.22rem !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
+        line-height: 1.35 !important;
+        margin-bottom: 10px !important;
+        letter-spacing: -0.01em !important;
+      }
+      .sheet-badges-row {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+        align-items: center !important;
+        margin-bottom: 12px !important;
+      }
+      .sheet-badge-sku {
+        background: #f1f5f9 !important;
+        color: #334155 !important;
+        font-size: 0.75rem !important;
+        font-weight: 700 !important;
+        padding: 4px 10px !important;
+        border-radius: 6px !important;
+        white-space: nowrap !important;
+        border: 1px solid #e2e8f0 !important;
+        display: inline-block !important;
+      }
+      .sheet-badge-stock {
+        background: #ecfdf5 !important;
+        color: #047857 !important;
+        font-size: 0.75rem !important;
+        font-weight: 700 !important;
+        padding: 4px 10px !important;
+        border-radius: 6px !important;
+        white-space: nowrap !important;
+        border: 1px solid #a7f3d0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+      }
+      .sheet-badge-moq {
+        background: #fffbeb !important;
+        color: #b45309 !important;
+        font-size: 0.75rem !important;
+        font-weight: 700 !important;
+        padding: 4px 10px !important;
+        border-radius: 6px !important;
+        white-space: nowrap !important;
+        border: 1px solid #fde68a !important;
+        display: inline-block !important;
+      }
+      .sheet-price-card {
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        padding: 10px 14px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        margin-bottom: 12px !important;
+      }
+      .sheet-price-rate {
+        display: flex !important;
+        align-items: baseline !important;
+        gap: 3px !important;
+        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
+      }
+      .sheet-price-currency {
+        font-size: 1.1rem !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
+      }
+      .sheet-price-number {
+        font-size: 1.6rem !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
+        letter-spacing: -0.02em !important;
+      }
+      .sheet-price-unit {
+        font-size: 0.85rem !important;
+        font-weight: 600 !important;
+        color: #64748b !important;
+        margin-left: 3px !important;
+      }
+      .sheet-price-tag {
+        font-size: 0.7rem !important;
+        font-weight: 700 !important;
+        color: #ea580c !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.03em !important;
+      }
+      .sheet-description {
+        font-size: 0.88rem !important;
+        color: #475569 !important;
+        line-height: 1.55 !important;
+        margin-bottom: 12px !important;
+      }
+      .sheet-specs-row {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 6px !important;
+        margin-bottom: 8px !important;
+      }
+      .sheet-spec-box {
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        padding: 8px 6px !important;
+        border-radius: 8px !important;
+        text-align: center !important;
+      }
+      .sheet-spec-box .spec-title {
+        font-size: 0.65rem !important;
+        color: #64748b !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        margin-bottom: 2px !important;
+      }
+      .sheet-spec-box .spec-value {
+        font-size: 0.78rem !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+      }
+      .sheet-sticky-footer {
+        position: sticky !important;
+        bottom: 0 !important;
+        background: #ffffff !important;
+        border-top: 1px solid #e2e8f0 !important;
+        padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 8px)) 16px !important;
+        box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.08) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        flex-shrink: 0 !important;
+        z-index: 20 !important;
+      }
+      .sheet-calc-row {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+      }
+      .sheet-stepper-group {
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+      }
+      .sheet-stepper-group .stepper-title {
+        font-size: 0.78rem !important;
+        font-weight: 700 !important;
+        color: #334155 !important;
+      }
+      .sheet-stepper {
+        display: inline-flex !important;
+        align-items: center !important;
+        background: #f1f5f9 !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        padding: 2px !important;
+      }
+      .sheet-step-btn {
+        width: 30px !important;
+        height: 30px !important;
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 6px !important;
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.06) !important;
+        padding: 0 !important;
+      }
+      .sheet-step-input {
+        width: 40px !important;
+        height: 30px !important;
+        border: none !important;
+        background: transparent !important;
+        text-align: center !important;
+        font-size: 0.9rem !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
+      }
+      .sheet-total-block {
+        text-align: right !important;
+      }
+      .sheet-total-block .total-lbl {
+        display: block !important;
+        font-size: 0.68rem !important;
+        font-weight: 600 !important;
+        color: #64748b !important;
+        text-transform: uppercase !important;
+      }
+      .sheet-total-block .total-val {
+        font-size: 1.15rem !important;
+        font-weight: 800 !important;
+        color: #ea580c !important;
+      }
+      .sheet-actions-row {
+        display: grid !important;
+        grid-template-columns: 1fr 1.35fr !important;
+        gap: 8px !important;
+      }
+      .btn-sheet-add-cart {
+        height: 42px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 6px !important;
+        background: #0f172a !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 10px !important;
+        font-size: 0.85rem !important;
+        font-weight: 700 !important;
+        cursor: pointer !important;
+        transition: all 0.15s ease !important;
+        padding: 0 8px !important;
+      }
+      .btn-sheet-add-cart:hover,
+      .btn-sheet-add-cart:active {
+        background: #1e293b !important;
+      }
+      .btn-sheet-order-wa {
+        height: 42px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 6px !important;
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 10px !important;
+        font-size: 0.85rem !important;
+        font-weight: 700 !important;
+        cursor: pointer !important;
+        box-shadow: 0 2px 8px rgba(34, 197, 94, 0.35) !important;
+        transition: all 0.15s ease !important;
+        padding: 0 8px !important;
+      }
+      .btn-sheet-order-wa:hover,
+      .btn-sheet-order-wa:active {
+        background: linear-gradient(135deg, #16a34a 0%, #15803d 100%) !important;
       }
     }
     @media (max-width: 360px) {
@@ -899,7 +1240,7 @@
   </footer>
 
   <!-- Application Logic with Cache Busting -->
-  <script src="app.js?v=20261019_1815"></script>
+  <script src="app.js?v=20261019_1835"></script>
 </body>
 
 </html>

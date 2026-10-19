@@ -628,82 +628,79 @@ function openProductModal(productId) {
 
   content.innerHTML = `
     <div class="modal-prod-sheet">
-      <div class="modal-drag-pill" title="Swipe or tap outside to close"></div>
-
-      <!-- Close Button -->
-      <button type="button" class="btn-modal-close-round" onclick="closeProductModal()" aria-label="Close modal">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
+      <!-- Top Header Bar with Centered Drag Handle & Top-Right Close Button -->
+      <div class="sheet-header-bar">
+        <div class="modal-drag-pill" title="Tap outside to close"></div>
+        <button type="button" class="btn-sheet-close" onclick="closeProductModal()" aria-label="Close modal">✕</button>
+      </div>
 
       <!-- Scrollable Content Body -->
       <div class="modal-sheet-scrollable">
-        <div class="modal-prod-img-box">
-          <img src="${prod.imageUrl}" alt="${escapeHtml(prod.name)}" class="modal-prod-img" onerror="this.onerror=null; this.src=FALLBACK_PRODUCT_IMAGE;" />
-          <div class="modal-img-tag-pill">${escapeHtml(prod.categoryName)}</div>
+        <div class="sheet-img-wrap">
+          <img src="${prod.imageUrl}" alt="${escapeHtml(prod.name)}" class="sheet-img" onerror="this.onerror=null; this.src=FALLBACK_PRODUCT_IMAGE;" />
         </div>
 
-        <div class="modal-sheet-info">
-          <div class="modal-tags-row">
-            <span class="badge-chip-sku">SKU: ${prod.sku}</span>
-            <span class="badge-chip-stock"><span class="chip-dot"></span>In Stock (${prod.stockQuantity})</span>
-            <span class="badge-chip-moq">Min. Order: ${prod.minimumOrderQuantity} ${escapeHtml(prod.unit)}</span>
+        <div class="sheet-category-tag">${escapeHtml(prod.categoryName)}</div>
+        <h2 class="sheet-product-title">${escapeHtml(prod.name)}</h2>
+
+        <div class="sheet-badges-row">
+          <span class="sheet-badge-sku">SKU: ${prod.sku}</span>
+          <span class="sheet-badge-stock">● In Stock (${prod.stockQuantity})</span>
+          <span class="sheet-badge-moq">Min. Order: ${prod.minimumOrderQuantity} ${escapeHtml(prod.unit)}</span>
+        </div>
+
+        <div class="sheet-price-card">
+          <div class="sheet-price-rate">
+            <span class="sheet-price-currency">₹</span>
+            <span class="sheet-price-number">${prod.wholesalePrice.toLocaleString('en-IN')}</span>
+            <span class="sheet-price-unit">/ ${escapeHtml(prod.unit)}</span>
           </div>
+          <span class="sheet-price-tag">Factory Wholesale Rate</span>
+        </div>
 
-          <h2 class="modal-sheet-title">${escapeHtml(prod.name)}</h2>
+        <p class="sheet-description">${escapeHtml(prod.description)}</p>
 
-          <div class="modal-pricing-banner">
-            <div class="modal-rate-group">
-              <span class="modal-rate-currency">₹</span>
-              <span class="modal-rate-val">${prod.wholesalePrice.toLocaleString('en-IN')}</span>
-              <span class="modal-rate-unit">/ ${escapeHtml(prod.unit)}</span>
-            </div>
-            <div class="modal-factory-tag">Wholesale Factory Rate</div>
+        <div class="sheet-specs-row">
+          <div class="sheet-spec-box">
+            <div class="spec-title">Packaging</div>
+            <div class="spec-value">${escapeHtml(prod.unit)}</div>
           </div>
-
-          <p class="modal-sheet-desc">${escapeHtml(prod.description)}</p>
-
-          <div class="modal-specs-strip">
-            <div class="spec-tile">
-              <div class="spec-label">Packaging</div>
-              <div class="spec-val">${escapeHtml(prod.unit)}</div>
-            </div>
-            <div class="spec-tile">
-              <div class="spec-label">Min. Order</div>
-              <div class="spec-val">${prod.minimumOrderQuantity} Units</div>
-            </div>
-            <div class="spec-tile">
-              <div class="spec-label">Dispatch Hub</div>
-              <div class="spec-val">Sanwer Rd, Indore</div>
-            </div>
+          <div class="sheet-spec-box">
+            <div class="spec-title">Min. Order (MOQ)</div>
+            <div class="spec-value">${prod.minimumOrderQuantity} Units</div>
+          </div>
+          <div class="sheet-spec-box">
+            <div class="spec-title">Dispatch Hub</div>
+            <div class="spec-value">Sanwer Rd, Indore</div>
           </div>
         </div>
       </div>
 
       <!-- Sticky Bottom Action Footer -->
-      <div class="modal-sticky-footer">
-        <div class="modal-calc-row">
-          <div class="modal-stepper-wrap">
-            <span class="stepper-label-text">Qty:</span>
-            <div class="stepper-control modern-stepper">
-              <button type="button" class="stepper-btn" onclick="stepModalQty(${prod.id}, -1)">−</button>
-              <input type="number" id="modal-qty-${prod.id}" class="stepper-input" value="${currentQty}" min="${prod.minimumOrderQuantity}" onchange="validateModalQtyInput(${prod.id}, this.value)" />
-              <button type="button" class="stepper-btn" onclick="stepModalQty(${prod.id}, 1)">+</button>
+      <div class="sheet-sticky-footer">
+        <div class="sheet-calc-row">
+          <div class="sheet-stepper-group">
+            <span class="stepper-title">Wholesale Qty:</span>
+            <div class="sheet-stepper">
+              <button type="button" class="sheet-step-btn" onclick="stepModalQty(${prod.id}, -1)">−</button>
+              <input type="number" id="modal-qty-${prod.id}" class="sheet-step-input" value="${currentQty}" min="${prod.minimumOrderQuantity}" onchange="validateModalQtyInput(${prod.id}, this.value)" />
+              <button type="button" class="sheet-step-btn" onclick="stepModalQty(${prod.id}, 1)">+</button>
             </div>
           </div>
 
-          <div class="modal-subtotal-block">
-            <span class="calc-label">Total Amount</span>
-            <span class="calc-amount" id="modal-subtotal-${prod.id}">₹${initialLineTotal.toLocaleString('en-IN')}</span>
+          <div class="sheet-total-block">
+            <span class="total-lbl">Total Amount</span>
+            <span class="total-val" id="modal-subtotal-${prod.id}">₹${initialLineTotal.toLocaleString('en-IN')}</span>
           </div>
         </div>
 
-        <div class="modal-action-buttons">
-          <button type="button" class="btn-sheet-cart" onclick="addModalToCart(${prod.id})">
+        <div class="sheet-actions-row">
+          <button type="button" class="btn-sheet-add-cart" onclick="addModalToCart(${prod.id})">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-5Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
             <span id="modal-cart-btn-text-${prod.id}">${inCart ? 'Update Cart' : '+ Add to Cart'}</span>
           </button>
 
-          <button type="button" class="btn-sheet-whatsapp" onclick="quickWhatsAppOrderFromModal(${prod.id})">
+          <button type="button" class="btn-sheet-order-wa" onclick="quickWhatsAppOrderFromModal(${prod.id})">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
             <span>Order on WhatsApp</span>
           </button>
@@ -818,7 +815,7 @@ async function quickWhatsAppOrderFromModal(productId) {
 }
 
 function closeProductModal(e) {
-  if (e && e.target !== e.currentTarget && !e.target.classList.contains('btn-modal-close-round') && !e.target.closest('.btn-modal-close-round')) {
+  if (e && e.target !== e.currentTarget && !e.target.classList.contains('btn-sheet-close') && !e.target.closest('.btn-sheet-close')) {
     return;
   }
   const modal = document.getElementById('productModalBackdrop');

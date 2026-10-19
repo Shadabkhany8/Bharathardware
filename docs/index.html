@@ -16,8 +16,155 @@
     href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
     rel="stylesheet" />
 
-  <!-- Icons (Lucide via unpkg or inline SVG) -->
-  <link rel="stylesheet" href="style.css" />
+  <!-- Main Stylesheet with Cache Busting -->
+  <link rel="stylesheet" href="style.css?v=20261019_1655" />
+
+  <!-- Critical Mobile 2-Column Grid (Guarantees 4-Cards in viewport on all phones, immune to CSS cache) -->
+  <style>
+    @media (max-width: 900px) {
+      .container {
+        padding: 0 0.65rem !important;
+      }
+      .products-section {
+        padding: 0.75rem 0 5.5rem !important;
+      }
+      .product-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.55rem !important;
+      }
+      .product-card {
+        border-radius: 10px !important;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06) !important;
+      }
+      .product-card:hover {
+        transform: none !important;
+      }
+      .product-image-container {
+        height: 125px !important;
+      }
+      .card-top-badges {
+        top: 6px !important;
+        left: 6px !important;
+        right: 6px !important;
+      }
+      .sku-badge {
+        font-size: 0.55rem !important;
+        padding: 0.15rem 0.35rem !important;
+        border-radius: 3px !important;
+      }
+      .moq-badge {
+        font-size: 0.58rem !important;
+        padding: 0.15rem 0.4rem !important;
+      }
+      .card-body {
+        padding: 0.5rem 0.45rem !important;
+      }
+      .product-category-tag {
+        font-size: 0.58rem !important;
+        margin-bottom: 0.15rem !important;
+      }
+      .product-title {
+        font-size: 0.8rem !important;
+        line-height: 1.25 !important;
+        min-height: 2.05rem !important;
+        margin-bottom: 0.25rem !important;
+        -webkit-line-clamp: 2 !important;
+      }
+      .product-desc {
+        display: none !important;
+      }
+      .pricing-box {
+        padding: 0.35rem 0.45rem !important;
+        margin-bottom: 0.35rem !important;
+        border-radius: 6px !important;
+      }
+      .unit-label {
+        font-size: 0.6rem !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+      .price-row {
+        margin-top: 0.1rem !important;
+      }
+      .wholesale-price {
+        font-size: 1.05rem !important;
+      }
+      .stock-status {
+        font-size: 0.58rem !important;
+      }
+      .card-actions {
+        gap: 0.3rem !important;
+      }
+      .stepper-row {
+        margin-bottom: 0.25rem !important;
+      }
+      .stepper-label {
+        font-size: 0.62rem !important;
+      }
+      .stepper-control {
+        border-radius: 6px !important;
+      }
+      .stepper-btn {
+        width: 26px !important;
+        height: 26px !important;
+        font-size: 0.85rem !important;
+      }
+      .stepper-input {
+        width: 30px !important;
+        height: 26px !important;
+        font-size: 0.75rem !important;
+      }
+      .card-btn-group {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.25rem !important;
+      }
+      .btn-add-cart,
+      .btn-quick-whatsapp {
+        width: 100% !important;
+        padding: 0.45rem 0.2rem !important;
+        font-size: 0.68rem !important;
+        gap: 0.2rem !important;
+        border-radius: 6px !important;
+        justify-content: center !important;
+        text-align: center !important;
+      }
+      .btn-add-cart svg,
+      .btn-quick-whatsapp svg {
+        width: 13px !important;
+        height: 13px !important;
+        flex-shrink: 0 !important;
+      }
+      .btn-text-full {
+        display: none !important;
+      }
+      .btn-text-compact {
+        display: inline !important;
+        font-weight: 700 !important;
+      }
+      .mobile-sticky-cart-bar {
+        display: flex !important;
+      }
+    }
+    @media (max-width: 360px) {
+      .product-grid {
+        gap: 0.35rem !important;
+      }
+      .product-image-container {
+        height: 110px !important;
+      }
+      .wholesale-price {
+        font-size: 0.95rem !important;
+      }
+      .btn-add-cart,
+      .btn-quick-whatsapp {
+        font-size: 0.62rem !important;
+        padding: 0.4rem 0.15rem !important;
+      }
+    }
+  </style>
 
   <!-- jsPDF & AutoTable Engine for Direct Wholesale Bill Generation -->
   <script src="jspdf.umd.min.js"></script>
@@ -798,8 +945,8 @@
     </div>
   </footer>
 
-  <!-- Application Logic -->
-  <script src="app.js"></script>
+  <!-- Application Logic with Cache Busting -->
+  <script src="app.js?v=20261019_1655"></script>
 </body>
 
 </html>

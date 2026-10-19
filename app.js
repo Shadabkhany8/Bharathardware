@@ -319,15 +319,19 @@ function renderProducts() {
               </div>
             </div>
 
-            <button class="btn-add-cart" onclick="addCardToCart(${product.id})">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-5Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-              <span>${inCartItem ? 'Update in Cart' : 'Add to Wholesale Cart'}</span>
-            </button>
+            <div class="card-btn-group">
+              <button class="btn-add-cart" onclick="addCardToCart(${product.id})" title="${inCartItem ? 'Update in Cart' : 'Add to Wholesale Cart'}">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-5Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                <span class="btn-text-full">${inCartItem ? 'Update in Cart' : 'Add to Wholesale Cart'}</span>
+                <span class="btn-text-compact">${inCartItem ? '✓ Cart' : '+ Cart'}</span>
+              </button>
 
-            <button class="btn-quick-whatsapp" onclick="quickWhatsAppOrder(${product.id})">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
-              <span>Generate Bill &amp; WhatsApp</span>
-            </button>
+              <button class="btn-quick-whatsapp" onclick="quickWhatsAppOrder(${product.id})" title="Generate Bill & Send to WhatsApp">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
+                <span class="btn-text-full">Generate Bill &amp; WhatsApp</span>
+                <span class="btn-text-compact">⚡ WhatsApp</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -580,16 +584,26 @@ function filterByCategory(categoryId) {
 
 function handleSearch(val) {
   currentSearch = val;
+  const searchInput = document.getElementById('searchInput');
+  const mobileSearchInput = document.getElementById('mobileSearchInput');
   const clearBtn = document.getElementById('clearSearchBtn');
-  if (clearBtn) {
-    clearBtn.style.display = val.trim() ? 'block' : 'none';
-  }
+  const clearMobileBtn = document.getElementById('clearMobileSearchBtn');
+
+  if (searchInput && searchInput.value !== val) searchInput.value = val;
+  if (mobileSearchInput && mobileSearchInput.value !== val) mobileSearchInput.value = val;
+
+  const showClear = val.trim() ? 'block' : 'none';
+  if (clearBtn) clearBtn.style.display = showClear;
+  if (clearMobileBtn) clearMobileBtn.style.display = showClear;
+
   renderProducts();
 }
 
 function clearSearch() {
   const searchInput = document.getElementById('searchInput');
+  const mobileSearchInput = document.getElementById('mobileSearchInput');
   if (searchInput) searchInput.value = '';
+  if (mobileSearchInput) mobileSearchInput.value = '';
   handleSearch('');
 }
 

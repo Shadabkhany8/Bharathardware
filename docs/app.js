@@ -797,220 +797,229 @@ function generateOrderNumber() {
   return `BS-2026-${randomSuffix}`;
 }
 
-// Client-side PDF generator (jsPDF + autoTable)
+// ============================================================================
+// PDF Engine: Constructs Full A4 Wholesale Tax Invoice
+// ============================================================================
+function createInvoiceDoc(order) {
+  if (typeof window.jspdf === 'undefined' || !window.jspdf.jsPDF) {
+    console.warn('jsPDF engine not available on window.');
+    return null;
+  }
+
+  const { jsPDF } = window.jspdf;
+  if (typeof window.applyPlugin === 'function') {
+    try { window.applyPlugin(jsPDF); } catch (e) {}
+  }
+
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'pt',
+    format: 'a4',
+  });
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 36; // 0.5 inch margin
+
+  // Top Brand Accent (Industrial Orange)
+  doc.setFillColor(234, 88, 12);
+  doc.rect(0, 0, pageWidth, 6, 'F');
+
+  // Header Navy Box (#0F172A)
+  doc.setFillColor(15, 23, 42);
+  doc.roundedRect(margin, 18, pageWidth - margin * 2, 72, 6, 6, 'F');
+
+  // Left Header Brand
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(20);
+  doc.text('BHARAT SPONGE', margin + 16, 44);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(203, 213, 225);
+  doc.text('INDUSTRIAL ABRASIVE SPONGES & FINISHING TOOLS', margin + 16, 58);
+  doc.text('Factory Hub: Sanwer Road Industrial Area, Sector B, Indore, MP 452015', margin + 16, 70);
+  doc.text('Owner / WhatsApp: Arbaz Khan | Mobile: +91 7869385515', margin + 16, 82);
+
+  // Right Header Badge
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(13);
+  doc.setTextColor(251, 146, 60);
+  doc.text('WHOLESALE TAX INVOICE', pageWidth - margin - 16, 44, { align: 'right' });
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(241, 245, 249);
+  doc.text(`Bill No: ${order.orderNumber}`, pageWidth - margin - 16, 58, { align: 'right' });
+  doc.text(`Date: ${order.dateStr}`, pageWidth - margin - 16, 70, { align: 'right' });
+  doc.text('Channel: Direct WhatsApp Order', pageWidth - margin - 16, 82, { align: 'right' });
+
+  // Order Info Card
+  const infoY = 100;
+  doc.setFillColor(248, 250, 252);
+  doc.setDrawColor(226, 232, 240);
+  doc.roundedRect(margin, infoY, pageWidth - margin * 2, 54, 4, 4, 'FD');
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(71, 85, 105);
+  doc.text('ORDER & FACTORY DISPATCH INFORMATION', margin + 12, infoY + 14);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(15, 23, 42);
+  doc.text('Customer / Dealer: ', margin + 12, infoY + 28);
+  doc.setFont('helvetica', 'bold');
+  doc.text(order.buyerName || 'Direct Wholesale Buyer', margin + 105, infoY + 28);
+
+  doc.setFont('helvetica', 'normal');
+  doc.text('Delivery Zone: ', margin + 12, infoY + 42);
+  doc.setFont('helvetica', 'bold');
+  doc.text(order.deliveryZoneLabel || 'Indore Local Dispatch (FREE)', margin + 105, infoY + 42);
+
+  const rightColX = pageWidth / 2 + 15;
+  doc.setFont('helvetica', 'normal');
+  doc.text('Settlement Mode: ', rightColX, infoY + 28);
+  doc.setFont('helvetica', 'bold');
+  doc.text(order.paymentMethod || 'Cash / UPI on Delivery', rightColX + 85, infoY + 28);
+
+  doc.setFont('helvetica', 'normal');
+  doc.text('Dispatch Hub: ', rightColX, infoY + 42);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Sanwer Road Hub, Indore (M.P.)', rightColX + 85, infoY + 42);
+
+  // Table Data
+  const tableRows = order.items.map((item, index) => [
+    index + 1,
+    item.name,
+    item.sku,
+    item.unit,
+    `Rs. ${Number(item.price).toLocaleString('en-IN')}`,
+    item.quantity,
+    `Rs. ${Number(item.subtotal).toLocaleString('en-IN')}`,
+  ]);
+
+  const autoTableFn = doc.autoTable || (typeof window.autoTable === 'function' ? window.autoTable : null);
+
+  if (autoTableFn) {
+    autoTableFn.call(doc, {
+      startY: infoY + 62,
+      margin: { left: margin, right: margin },
+      head: [['#', 'Item Description', 'SKU', 'Packaging Unit', 'Wholesale Rate', 'Qty', 'Amount']],
+      body: tableRows,
+      theme: 'grid',
+      styles: {
+        font: 'helvetica',
+        fontSize: 8.5,
+        cellPadding: 5,
+        textColor: [30, 41, 59],
+        lineColor: [226, 232, 240],
+        lineWidth: 0.5,
+      },
+      headStyles: {
+        fillColor: [15, 23, 42],
+        textColor: [255, 255, 255],
+        fontStyle: 'bold',
+        fontSize: 8.5,
+        halign: 'left',
+      },
+      columnStyles: {
+        0: { cellWidth: 24, halign: 'center' },
+        1: { cellWidth: 'auto', fontStyle: 'bold' },
+        2: { cellWidth: 64, textColor: [100, 116, 139] },
+        3: { cellWidth: 68 },
+        4: { cellWidth: 70, halign: 'right' },
+        5: { cellWidth: 36, halign: 'center', fontStyle: 'bold' },
+        6: { cellWidth: 74, halign: 'right', fontStyle: 'bold' },
+      },
+      alternateRowStyles: {
+        fillColor: [248, 250, 252],
+      },
+    });
+  }
+
+  const finalY = (doc.lastAutoTable ? doc.lastAutoTable.finalY : infoY + 160) + 12;
+
+  // Totals Box
+  const summaryBoxWidth = 220;
+  const summaryBoxX = pageWidth - margin - summaryBoxWidth;
+
+  doc.setFillColor(248, 250, 252);
+  doc.setDrawColor(226, 232, 240);
+  doc.roundedRect(summaryBoxX, finalY, summaryBoxWidth, 78, 4, 4, 'FD');
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(71, 85, 105);
+  doc.text('Total Items / Units:', summaryBoxX + 12, finalY + 18);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(15, 23, 42);
+  doc.text(`${order.totalUnits} Units`, summaryBoxX + summaryBoxWidth - 12, finalY + 18, { align: 'right' });
+
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(71, 85, 105);
+  doc.text('Wholesale Subtotal:', summaryBoxX + 12, finalY + 34);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(15, 23, 42);
+  doc.text(`Rs. ${Number(order.subtotal).toLocaleString('en-IN')}`, summaryBoxX + summaryBoxWidth - 12, finalY + 34, { align: 'right' });
+
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(71, 85, 105);
+  doc.text('Delivery Charge:', summaryBoxX + 12, finalY + 50);
+  doc.setFont('helvetica', 'bold');
+  const delCharge = Number(order.deliveryCharge) || 0;
+  doc.setTextColor(delCharge === 0 ? 22 : 15, delCharge === 0 ? 101 : 23, delCharge === 0 ? 52 : 42);
+  doc.text(delCharge === 0 ? 'FREE (Indore Hub)' : `+Rs. ${delCharge.toLocaleString('en-IN')}`, summaryBoxX + summaryBoxWidth - 12, finalY + 50, { align: 'right' });
+
+  // Grand Total Highlight Card
+  doc.setFillColor(15, 23, 42);
+  doc.roundedRect(summaryBoxX, finalY + 58, summaryBoxWidth, 24, 3, 3, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor(255, 255, 255);
+  doc.text('TOTAL AMOUNT:', summaryBoxX + 10, finalY + 74);
+  doc.setTextColor(251, 146, 60);
+  doc.text(`Rs. ${Number(order.grandTotal).toLocaleString('en-IN')}`, summaryBoxX + summaryBoxWidth - 10, finalY + 74, { align: 'right' });
+
+  // Terms & Guarantee
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(15, 23, 42);
+  doc.text('TERMS & DISPATCH GUARANTEE:', margin, finalY + 18);
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(100, 116, 139);
+  doc.text('• Direct factory dispatch from Sanwer Road Industrial Area, Indore, M.P.', margin, finalY + 30);
+  doc.text('• Wholesale B2B supply: 100% Genuine industrial grade abrasive foam.', margin, finalY + 42);
+  doc.text('• For dispatch tracking & transport receipts, WhatsApp/Call +91 7869385515.', margin, finalY + 54);
+  doc.text('• This bill has been automatically recorded and forwarded to factory dispatch.', margin, finalY + 66);
+
+  // Footer
+  const footerY = Math.max(finalY + 96, pageHeight - 50);
+  doc.setDrawColor(226, 232, 240);
+  doc.setLineWidth(0.5);
+  doc.line(margin, footerY - 10, pageWidth - margin, footerY - 10);
+
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(8);
+  doc.setTextColor(148, 163, 184);
+  doc.text('Bharat Sponge Wholesale Hub • Computer-generated commercial order bill', margin, footerY + 2);
+
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(71, 85, 105);
+  doc.text('For BHARAT SPONGE (Authorized Dispatch Desk)', pageWidth - margin, footerY + 2, { align: 'right' });
+
+  return doc;
+}
+
+// Client-side PDF generator & downloader (jsPDF + autoTable)
 function generateAndDownloadInvoicePDF(order) {
   try {
-    if (typeof window.jspdf === 'undefined' || !window.jspdf.jsPDF) {
-      console.warn('jsPDF engine not available on window, skipping automatic PDF download.');
-      return false;
-    }
+    const doc = createInvoiceDoc(order);
+    if (!doc) return false;
 
-    const { jsPDF } = window.jspdf;
-    if (typeof window.applyPlugin === 'function') {
-      try { window.applyPlugin(jsPDF); } catch (e) {}
-    }
-
-    const doc = new jsPDF({
-      orientation: 'portrait',
-      unit: 'pt',
-      format: 'a4',
-    });
-
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
-    const margin = 36; // 0.5 inch margin
-
-    // Top Brand Accent (Industrial Orange)
-    doc.setFillColor(234, 88, 12);
-    doc.rect(0, 0, pageWidth, 6, 'F');
-
-    // Header Navy Box (#0F172A)
-    doc.setFillColor(15, 23, 42);
-    doc.roundedRect(margin, 18, pageWidth - margin * 2, 72, 6, 6, 'F');
-
-    // Left Header Brand
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(20);
-    doc.text('BHARAT SPONGE', margin + 16, 44);
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(203, 213, 225);
-    doc.text('INDUSTRIAL ABRASIVE SPONGES & FINISHING TOOLS', margin + 16, 58);
-    doc.text('Factory Hub: Sanwer Road Industrial Area, Sector B, Indore, MP 452015', margin + 16, 70);
-    doc.text('Owner / WhatsApp: Arbaz Khan | Mobile: +91 7869385515', margin + 16, 82);
-
-    // Right Header Badge
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(13);
-    doc.setTextColor(251, 146, 60);
-    doc.text('WHOLESALE TAX INVOICE', pageWidth - margin - 16, 44, { align: 'right' });
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(241, 245, 249);
-    doc.text(`Bill No: ${order.orderNumber}`, pageWidth - margin - 16, 58, { align: 'right' });
-    doc.text(`Date: ${order.dateStr}`, pageWidth - margin - 16, 70, { align: 'right' });
-    doc.text('Channel: Direct WhatsApp Order', pageWidth - margin - 16, 82, { align: 'right' });
-
-    // Order Info Card
-    const infoY = 100;
-    doc.setFillColor(248, 250, 252);
-    doc.setDrawColor(226, 232, 240);
-    doc.roundedRect(margin, infoY, pageWidth - margin * 2, 54, 4, 4, 'FD');
-
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
-    doc.setTextColor(71, 85, 105);
-    doc.text('ORDER & FACTORY DISPATCH INFORMATION', margin + 12, infoY + 14);
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(15, 23, 42);
-    doc.text('Customer / Dealer: ', margin + 12, infoY + 28);
-    doc.setFont('helvetica', 'bold');
-    doc.text(order.buyerName || 'Direct Wholesale Buyer', margin + 105, infoY + 28);
-
-    doc.setFont('helvetica', 'normal');
-    doc.text('Delivery Zone: ', margin + 12, infoY + 42);
-    doc.setFont('helvetica', 'bold');
-    doc.text(order.deliveryZoneLabel || 'Indore Local Dispatch (FREE)', margin + 105, infoY + 42);
-
-    const rightColX = pageWidth / 2 + 15;
-    doc.setFont('helvetica', 'normal');
-    doc.text('Settlement Mode: ', rightColX, infoY + 28);
-    doc.setFont('helvetica', 'bold');
-    doc.text(order.paymentMethod || 'Cash / UPI on Delivery', rightColX + 85, infoY + 28);
-
-    doc.setFont('helvetica', 'normal');
-    doc.text('Dispatch Hub: ', rightColX, infoY + 42);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Sanwer Road Hub, Indore (M.P.)', rightColX + 85, infoY + 42);
-
-    // Table Data
-    const tableRows = order.items.map((item, index) => [
-      index + 1,
-      item.name,
-      item.sku,
-      item.unit,
-      `Rs. ${Number(item.price).toLocaleString('en-IN')}`,
-      item.quantity,
-      `Rs. ${Number(item.subtotal).toLocaleString('en-IN')}`,
-    ]);
-
-    const autoTableFn = doc.autoTable || (typeof window.autoTable === 'function' ? window.autoTable : null);
-
-    if (autoTableFn) {
-      autoTableFn.call(doc, {
-        startY: infoY + 62,
-        margin: { left: margin, right: margin },
-        head: [['#', 'Item Description', 'SKU', 'Packaging Unit', 'Wholesale Rate', 'Qty', 'Amount']],
-        body: tableRows,
-        theme: 'grid',
-        styles: {
-          font: 'helvetica',
-          fontSize: 8.5,
-          cellPadding: 5,
-          textColor: [30, 41, 59],
-          lineColor: [226, 232, 240],
-          lineWidth: 0.5,
-        },
-        headStyles: {
-          fillColor: [15, 23, 42],
-          textColor: [255, 255, 255],
-          fontStyle: 'bold',
-          fontSize: 8.5,
-          halign: 'left',
-        },
-        columnStyles: {
-          0: { cellWidth: 24, halign: 'center' },
-          1: { cellWidth: 'auto', fontStyle: 'bold' },
-          2: { cellWidth: 64, textColor: [100, 116, 139] },
-          3: { cellWidth: 68 },
-          4: { cellWidth: 70, halign: 'right' },
-          5: { cellWidth: 36, halign: 'center', fontStyle: 'bold' },
-          6: { cellWidth: 74, halign: 'right', fontStyle: 'bold' },
-        },
-        alternateRowStyles: {
-          fillColor: [248, 250, 252],
-        },
-      });
-    }
-
-    const finalY = (doc.lastAutoTable ? doc.lastAutoTable.finalY : infoY + 160) + 12;
-
-    // Totals Box
-    const summaryBoxWidth = 220;
-    const summaryBoxX = pageWidth - margin - summaryBoxWidth;
-
-    doc.setFillColor(248, 250, 252);
-    doc.setDrawColor(226, 232, 240);
-    doc.roundedRect(summaryBoxX, finalY, summaryBoxWidth, 78, 4, 4, 'FD');
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(71, 85, 105);
-    doc.text('Total Items / Units:', summaryBoxX + 12, finalY + 18);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(15, 23, 42);
-    doc.text(`${order.totalUnits} Units`, summaryBoxX + summaryBoxWidth - 12, finalY + 18, { align: 'right' });
-
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(71, 85, 105);
-    doc.text('Wholesale Subtotal:', summaryBoxX + 12, finalY + 34);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(15, 23, 42);
-    doc.text(`Rs. ${Number(order.subtotal).toLocaleString('en-IN')}`, summaryBoxX + summaryBoxWidth - 12, finalY + 34, { align: 'right' });
-
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(71, 85, 105);
-    doc.text('Delivery Charge:', summaryBoxX + 12, finalY + 50);
-    doc.setFont('helvetica', 'bold');
-    const delCharge = Number(order.deliveryCharge) || 0;
-    doc.setTextColor(delCharge === 0 ? 22 : 15, delCharge === 0 ? 101 : 23, delCharge === 0 ? 52 : 42);
-    doc.text(delCharge === 0 ? 'FREE (Indore Hub)' : `+Rs. ${delCharge.toLocaleString('en-IN')}`, summaryBoxX + summaryBoxWidth - 12, finalY + 50, { align: 'right' });
-
-    // Grand Total Highlight Card
-    doc.setFillColor(15, 23, 42);
-    doc.roundedRect(summaryBoxX, finalY + 58, summaryBoxWidth, 24, 3, 3, 'F');
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(10);
-    doc.setTextColor(255, 255, 255);
-    doc.text('TOTAL AMOUNT:', summaryBoxX + 10, finalY + 74);
-    doc.setTextColor(251, 146, 60);
-    doc.text(`Rs. ${Number(order.grandTotal).toLocaleString('en-IN')}`, summaryBoxX + summaryBoxWidth - 10, finalY + 74, { align: 'right' });
-
-    // Terms & Guarantee
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8.5);
-    doc.setTextColor(15, 23, 42);
-    doc.text('TERMS & DISPATCH GUARANTEE:', margin, finalY + 18);
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(100, 116, 139);
-    doc.text('• Direct factory dispatch from Sanwer Road Industrial Area, Indore, M.P.', margin, finalY + 30);
-    doc.text('• Wholesale B2B supply: 100% Genuine industrial grade abrasive foam.', margin, finalY + 42);
-    doc.text('• For dispatch tracking & transport receipts, WhatsApp/Call +91 7869385515.', margin, finalY + 54);
-    doc.text('• This bill has been automatically recorded and forwarded to factory dispatch.', margin, finalY + 66);
-
-    // Footer
-    const footerY = Math.max(finalY + 96, pageHeight - 50);
-    doc.setDrawColor(226, 232, 240);
-    doc.setLineWidth(0.5);
-    doc.line(margin, footerY - 10, pageWidth - margin, footerY - 10);
-
-    doc.setFont('helvetica', 'italic');
-    doc.setFontSize(8);
-    doc.setTextColor(148, 163, 184);
-    doc.text('Bharat Sponge Wholesale Hub • Computer-generated commercial order bill', margin, footerY + 2);
-
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(71, 85, 105);
-    doc.text('For BHARAT SPONGE (Authorized Dispatch Desk)', pageWidth - margin, footerY + 2, { align: 'right' });
-
-    // Save PDF file
     const filename = `BharatSponge_Invoice_${order.orderNumber}.pdf`;
     try {
       doc.save(filename);
@@ -1069,6 +1078,18 @@ function redirectToWhatsApp(url) {
   }
 }
 
+// Generates 1-Click Online Bill View Link for WhatsApp Chat
+function createBillShareUrl(order) {
+  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const base = isLocalhost
+    ? window.location.origin + window.location.pathname
+    : 'https://shadabkhany8.github.io/Bharathardware/';
+  const compactItems = (order.items || [])
+    .map((item) => `${item.productId}:${item.quantity}`)
+    .join(',');
+  return `${base}?invoice=${encodeURIComponent(order.orderNumber)}&items=${encodeURIComponent(compactItems)}`;
+}
+
 // Professional WhatsApp Message Formatter
 function buildWhatsAppOrderUrl(order) {
   const dateStr = order.dateStr || new Date().toLocaleString('en-IN', {
@@ -1115,17 +1136,84 @@ function buildWhatsAppOrderUrl(order) {
     lines.push(`📝 *Note / Transport:* ${order.orderNotes}`);
   }
 
+  const billShareUrl = createBillShareUrl(order);
   lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━`);
-  lines.push(`📄 *Official PDF Invoice generated & saved on device:*`);
-  lines.push(`📁 \`BharatSponge_Invoice_${order.orderNumber}.pdf\``);
+  lines.push(`📄 *OFFICIAL WHOLESALE PDF BILL:*`);
+  lines.push(`🔗 *View & Download Official PDF Online:*`);
+  lines.push(`${billShareUrl}`);
+  lines.push(`📁 *Saved on device:* \`BharatSponge_Invoice_${order.orderNumber}.pdf\``);
+  lines.push(`📎 *(To send actual PDF in chat: tap 📎 Document & select file)*`);
+  lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━`);
   lines.push(`🙏 *Arbaz bhai, please confirm wholesale stock & dispatch schedule.*`);
 
   const fullText = lines.join('\n');
   return `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(fullText)}`;
 }
 
-// 1-Click WhatsApp Order for a Single Product (Generates PDF + Opens WhatsApp directly)
-function quickWhatsAppOrder(productId) {
+// Native Mobile Web Share API with File Attachment or Desktop WhatsApp Redirect
+async function shareOrderNativeOrWhatsApp(order) {
+  if (!order) return;
+
+  // 1. Ensure PDF is generated and downloaded to device
+  const doc = createInvoiceDoc(order);
+  const filename = `BharatSponge_Invoice_${order.orderNumber}.pdf`;
+  if (doc) {
+    try {
+      doc.save(filename);
+      lastGeneratedPdfDoc = doc;
+    } catch (e) {
+      console.warn('Auto PDF save error:', e);
+    }
+  }
+
+  const billUrl = createBillShareUrl(order);
+  const waSummary = `🧾 *Bharat Sponge Wholesale Bill #${order.orderNumber}*\n🏭 Sanwer Road Industrial Area, Indore (M.P.)\n👤 Owner: Arbaz khan (+91 7869385515)\n💰 Net Total: ₹${Number(order.grandTotal).toLocaleString('en-IN')}\n📄 View / Download Online PDF Bill:\n${billUrl}`;
+
+  // 2. Check if browser supports sharing native files (Android Chrome, iOS Safari)
+  if (doc && typeof File !== 'undefined' && navigator.canShare) {
+    try {
+      const pdfBlob = doc.output('blob');
+      const pdfFile = new File([pdfBlob], filename, { type: 'application/pdf' });
+
+      if (navigator.canShare({ files: [pdfFile] })) {
+        try {
+          await navigator.share({
+            files: [pdfFile],
+            title: `Bharat Sponge - Bill #${order.orderNumber}`,
+            text: waSummary,
+          });
+          showToast(`PDF Bill #${order.orderNumber} shared successfully!`);
+          return;
+        } catch (shareErr) {
+          if (shareErr.name === 'AbortError') {
+            // User cancelled share dialog; keep receipt modal active
+            return;
+          }
+          console.warn('Native share cancelled or failed:', shareErr);
+        }
+      }
+    } catch (fileErr) {
+      console.warn('File share check failed:', fileErr);
+    }
+  }
+
+  // 3. Desktop browser or unsupported share: Redirect to WhatsApp with bill details & online link
+  const waUrl = buildWhatsAppOrderUrl(order);
+  showToast(`Bill PDF downloaded! WhatsApp opening for Bill #${order.orderNumber}...`);
+  redirectToWhatsApp(waUrl);
+}
+
+// Standalone Share PDF button on Receipt Modal
+async function shareCurrentOrderPdf() {
+  if (!lastPlacedOrder) {
+    showToast('No active bill found to share.');
+    return;
+  }
+  await shareOrderNativeOrWhatsApp(lastPlacedOrder);
+}
+
+// 1-Click WhatsApp Order for a Single Product (Generates PDF + Native Share / WhatsApp Dispatch)
+async function quickWhatsAppOrder(productId) {
   const prod = PRODUCTS.find((p) => p.id === productId);
   if (!prod) return;
 
@@ -1173,20 +1261,15 @@ function quickWhatsAppOrder(productId) {
 
   lastPlacedOrder = singleItemOrder;
 
-  // 1. Generate & download PDF Bill
-  generateAndDownloadInvoicePDF(singleItemOrder);
-
-  // 2. Prepare WhatsApp URL & trigger redirect
-  const whatsappUrl = buildWhatsAppOrderUrl(singleItemOrder);
-  redirectToWhatsApp(whatsappUrl);
-
-  // 3. Show order receipt on screen
+  // Show order receipt on screen
   showOrderReceipt(singleItemOrder);
-  showToast(`Bill PDF generated & WhatsApp opened (${orderNumber})!`);
+
+  // Trigger PDF file share / download & WhatsApp
+  await shareOrderNativeOrWhatsApp(singleItemOrder);
 }
 
-// Direct 1-Click WhatsApp Order from Wholesale Cart (Generates PDF + Sends to WhatsApp, Zero Form Filling!)
-function directCartWhatsAppOrder() {
+// Direct 1-Click WhatsApp Order from Wholesale Cart (Generates PDF + Native Share / WhatsApp, Zero Form Filling!)
+async function directCartWhatsAppOrder() {
   if (cart.length === 0) {
     showToast('Your wholesale cart is empty. Please add products first.');
     return;
@@ -1253,24 +1336,18 @@ function directCartWhatsAppOrder() {
 
   lastPlacedOrder = cartOrder;
 
-  // 1. Generate & download PDF Bill
-  generateAndDownloadInvoicePDF(cartOrder);
-
-  // 2. Open WhatsApp with full invoice bill
-  const whatsappUrl = buildWhatsAppOrderUrl(cartOrder);
-  redirectToWhatsApp(whatsappUrl);
-
-  // 3. Close cart drawer & display on-screen invoice receipt
+  // 1. Close cart drawer & display on-screen invoice receipt
   toggleCartDrawer(false);
   showOrderReceipt(cartOrder);
 
-  // 4. Reset Cart
+  // 2. Reset Cart
   cart = [];
   saveCart();
   updateCartUI();
   renderProducts();
 
-  showToast(`Bill PDF generated & WhatsApp opened (${orderNumber})!`);
+  // 3. Trigger PDF file share / download & WhatsApp
+  await shareOrderNativeOrWhatsApp(cartOrder);
 }
 
 // Generate & Download PDF Bill Only (Without navigating to WhatsApp)
@@ -1476,6 +1553,70 @@ function copyToClipboard(text) {
 
 function initFromUrlParams() {
   const params = new URLSearchParams(window.location.search);
+
+  // Direct Invoice Bill Link: ?invoice=BS-2026-123456&items=1:5,3:10
+  const invoiceNum = params.get('invoice');
+  const itemsParam = params.get('items');
+  if (invoiceNum) {
+    let reconstructedItems = [];
+    if (itemsParam) {
+      const parts = itemsParam.split(',');
+      parts.forEach((part) => {
+        const [pIdStr, qtyStr] = part.split(':');
+        const pId = parseInt(pIdStr, 10);
+        const qty = parseInt(qtyStr, 10);
+        const prod = PRODUCTS.find((p) => p.id === pId);
+        if (prod && qty > 0) {
+          reconstructedItems.push({
+            productId: prod.id,
+            name: prod.name,
+            sku: prod.sku,
+            unit: prod.unit,
+            price: prod.wholesalePrice,
+            quantity: qty,
+            subtotal: prod.wholesalePrice * qty,
+          });
+        }
+      });
+    }
+
+    if (reconstructedItems.length > 0) {
+      const subtotal = reconstructedItems.reduce((acc, i) => acc + i.subtotal, 0);
+      const totalUnits = reconstructedItems.reduce((acc, i) => acc + i.quantity, 0);
+      const loadedOrder = {
+        orderNumber: invoiceNum,
+        dateStr: new Date().toLocaleString('en-IN', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+        }),
+        buyerName: 'Direct Wholesale Buyer',
+        buyerPhone: 'Direct via WhatsApp',
+        businessName: 'Wholesale Order',
+        fullAddress: 'Indore Local Dispatch (Factory Hub)',
+        isLocal: true,
+        deliveryZoneLabel: 'Indore Local Dispatch (FREE)',
+        deliveryCharge: 0,
+        paymentMethod: 'Cash / UPI on Delivery',
+        orderNotes: 'Online Verified WhatsApp Invoice',
+        items: reconstructedItems,
+        totalUnits,
+        subtotal,
+        grandTotal: subtotal,
+        timestamp: new Date().toISOString(),
+      };
+
+      lastPlacedOrder = loadedOrder;
+      setTimeout(() => {
+        showOrderReceipt(loadedOrder);
+        showToast(`Official Bill #${invoiceNum} loaded on screen!`);
+      }, 400);
+      return;
+    }
+  }
 
   // Direct Product Link: ?product=2
   const prodId = params.get('product');

@@ -36,7 +36,7 @@ const PRODUCTS = [
     sku: 'BS-SP-101',
     name: 'Bharat SuperGrit Sanding Sponge (Medium 120)',
     description: 'Four-sided abrasive foam sponge for profiled woodwork, metal surfaces, and drywall sanding. Washable and reusable.',
-    imageUrl: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=600&auto=format&fit=crop',
+    imageUrl: 'assets/images/prod_1.jpg',
     unit: 'Box of 24',
     wholesalePrice: 480.0,
     minimumOrderQuantity: 5,
@@ -50,7 +50,7 @@ const PRODUCTS = [
     sku: 'BS-SP-102',
     name: 'Bharat UltraFine Flexible Foam Pad (Grit 320)',
     description: 'High-flexibility thin foam abrasive pad ideal for curved auto body panels, wood contours, and primer scuffing.',
-    imageUrl: 'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?w=600&auto=format&fit=crop',
+    imageUrl: 'assets/images/prod_2.jpg',
     unit: 'Box of 50',
     wholesalePrice: 850.0,
     minimumOrderQuantity: 3,
@@ -64,7 +64,7 @@ const PRODUCTS = [
     sku: 'BS-SP-103',
     name: 'Bharat Dual-Density Sanding Block (Coarse 60)',
     description: 'Rigid dense core with coarse aluminum oxide coating for rapid material removal on hardwoods, iron, and weld seams.',
-    imageUrl: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=600&auto=format&fit=crop',
+    imageUrl: 'assets/images/prod_3.jpg',
     unit: 'Pack of 12',
     wholesalePrice: 360.0,
     minimumOrderQuantity: 10,
@@ -78,7 +78,7 @@ const PRODUCTS = [
     sku: 'BS-POL-201',
     name: 'ProBuff Waffle Foam Polishing Pad (6-Inch)',
     description: 'Precision cut waffle face prevents swirl marks and distributes cutting compound evenly across panels. Velcro hook & loop backing.',
-    imageUrl: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=600&auto=format&fit=crop',
+    imageUrl: 'assets/images/prod_4.jpg',
     unit: 'Pack of 5',
     wholesalePrice: 650.0,
     minimumOrderQuantity: 4,
@@ -92,7 +92,7 @@ const PRODUCTS = [
     sku: 'BS-POL-202',
     name: 'Microfiber Finishing Sponge Applicator',
     description: 'Dense polyurethane sponge wrapped in scratch-free microfiber for ceramic coatings, liquid wax, and paint sealant.',
-    imageUrl: 'https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=600&auto=format&fit=crop',
+    imageUrl: 'assets/images/prod_5.jpg',
     unit: 'Pack of 10',
     wholesalePrice: 420.0,
     minimumOrderQuantity: 8,
@@ -106,7 +106,7 @@ const PRODUCTS = [
     sku: 'BS-IND-301',
     name: 'Heavy Duty Industrial Green Scourer (Extra Coarse)',
     description: 'Industrial nylon web scouring pad for commercial equipment, foundry cleaning, heavy rust preparation, and degreasing.',
-    imageUrl: 'https://images.unsplash.com/photo-1585421514738-01798e348b17?w=600&auto=format&fit=crop',
+    imageUrl: 'assets/images/prod_6.jpg',
     unit: 'Carton of 60',
     wholesalePrice: 1200.0,
     minimumOrderQuantity: 2,
@@ -120,7 +120,7 @@ const PRODUCTS = [
     sku: 'BS-IND-302',
     name: 'Non-Scratch Blue Industrial Degreasing Sponge',
     description: 'Tough cellulose core combined with non-woven scrubbing surface for factory maintenance, food machinery, and tooling.',
-    imageUrl: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=600&auto=format&fit=crop',
+    imageUrl: 'assets/images/prod_7.jpg',
     unit: 'Carton of 48',
     wholesalePrice: 960.0,
     minimumOrderQuantity: 3,
@@ -134,7 +134,7 @@ const PRODUCTS = [
     sku: 'BS-RST-401',
     name: 'Diamond Hand Polishing Sponge (Grit 200)',
     description: 'Electroplated diamond abrasive surface on ergonomic EVA foam base. Cuts through granite, marble, glass, tiles, and hardened steel.',
-    imageUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop',
+    imageUrl: 'assets/images/prod_8.jpg',
     unit: 'Piece',
     wholesalePrice: 290.0,
     minimumOrderQuantity: 10,
@@ -148,7 +148,7 @@ const PRODUCTS = [
     sku: 'BS-RST-402',
     name: 'Silicon Carbide Contoured Rust Stripper Block',
     description: 'Beveled edge sanding sponge engineered to access angled grooves, welded seams, and pipe perimeters before primer.',
-    imageUrl: 'https://images.unsplash.com/photo-1508873696983-2df5293cb325?w=600&auto=format&fit=crop',
+    imageUrl: 'assets/images/prod_9.jpg',
     unit: 'Box of 20',
     wholesalePrice: 580.0,
     minimumOrderQuantity: 5,
@@ -162,7 +162,7 @@ const PRODUCTS = [
     sku: 'BS-ACC-501',
     name: 'Hook & Loop Sponge Interface Cushion Pad (5-Inch)',
     description: 'Soft density foam interface pad to minimize burn-through and provide cushioning on random orbital disc sanders.',
-    imageUrl: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=600&auto=format&fit=crop',
+    imageUrl: 'assets/images/prod_10.jpg',
     unit: 'Pack of 4',
     wholesalePrice: 380.0,
     minimumOrderQuantity: 5,
@@ -176,7 +176,7 @@ const PRODUCTS = [
     sku: 'BS-ACC-502',
     name: 'Continuous Abrasive Foam Roll (115mm x 25M, Grit 180)',
     description: 'Perforated sponge roll in dispensing box. Tear off exact length needed for workshops, fabrication lines, and paint shops.',
-    imageUrl: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&auto=format&fit=crop',
+    imageUrl: 'assets/images/prod_11.jpg',
     unit: 'Roll',
     wholesalePrice: 1450.0,
     minimumOrderQuantity: 2,
@@ -624,52 +624,107 @@ function openProductModal(productId) {
 
   const inCart = cart.find((i) => i.productId === prod.id);
   const currentQty = inCart ? inCart.quantity : prod.minimumOrderQuantity;
+  const initialLineTotal = prod.wholesalePrice * currentQty;
 
   content.innerHTML = `
-    <div class="modal-prod-img-wrap">
-      <img src="${prod.imageUrl}" alt="${escapeHtml(prod.name)}" class="modal-prod-img" />
-    </div>
-    <div class="modal-prod-details">
-      <div class="modal-cat-tag">${escapeHtml(prod.categoryName)}</div>
-      <h2 class="modal-prod-title">${escapeHtml(prod.name)}</h2>
-      <div class="modal-sku-bar">
-        <span class="modal-sku">SKU: ${prod.sku}</span>
-        <span class="modal-stock">🟢 Factory Stock: ${prod.stockQuantity} units available</span>
-      </div>
-      <p class="modal-prod-desc">${escapeHtml(prod.description)}</p>
+    <div class="modal-prod-sheet">
+      <div class="modal-drag-pill" title="Swipe or tap outside to close"></div>
 
-      <div class="modal-price-box">
-        <div class="modal-price-val">₹${prod.wholesalePrice.toLocaleString('en-IN')}</div>
-        <div class="modal-unit">Unit: ${escapeHtml(prod.unit)}</div>
-        <div class="modal-moq-info">⚡ Wholesale Minimum Order Quantity (MOQ): ${prod.minimumOrderQuantity} ${escapeHtml(prod.unit)}</div>
+      <!-- Close Button -->
+      <button type="button" class="btn-modal-close-round" onclick="closeProductModal()" aria-label="Close modal">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+
+      <!-- Scrollable Content Body -->
+      <div class="modal-sheet-scrollable">
+        <div class="modal-prod-img-box">
+          <img src="${prod.imageUrl}" alt="${escapeHtml(prod.name)}" class="modal-prod-img" onerror="this.onerror=null; this.src=FALLBACK_PRODUCT_IMAGE;" />
+          <div class="modal-img-tag-pill">${escapeHtml(prod.categoryName)}</div>
+        </div>
+
+        <div class="modal-sheet-info">
+          <div class="modal-tags-row">
+            <span class="badge-chip-sku">SKU: ${prod.sku}</span>
+            <span class="badge-chip-stock"><span class="chip-dot"></span>In Stock (${prod.stockQuantity})</span>
+            <span class="badge-chip-moq">Min. Order: ${prod.minimumOrderQuantity} ${escapeHtml(prod.unit)}</span>
+          </div>
+
+          <h2 class="modal-sheet-title">${escapeHtml(prod.name)}</h2>
+
+          <div class="modal-pricing-banner">
+            <div class="modal-rate-group">
+              <span class="modal-rate-currency">₹</span>
+              <span class="modal-rate-val">${prod.wholesalePrice.toLocaleString('en-IN')}</span>
+              <span class="modal-rate-unit">/ ${escapeHtml(prod.unit)}</span>
+            </div>
+            <div class="modal-factory-tag">Wholesale Factory Rate</div>
+          </div>
+
+          <p class="modal-sheet-desc">${escapeHtml(prod.description)}</p>
+
+          <div class="modal-specs-strip">
+            <div class="spec-tile">
+              <div class="spec-label">Packaging</div>
+              <div class="spec-val">${escapeHtml(prod.unit)}</div>
+            </div>
+            <div class="spec-tile">
+              <div class="spec-label">Min. Order</div>
+              <div class="spec-val">${prod.minimumOrderQuantity} Units</div>
+            </div>
+            <div class="spec-tile">
+              <div class="spec-label">Dispatch Hub</div>
+              <div class="spec-val">Sanwer Rd, Indore</div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="card-actions" style="margin-top: auto;">
-        <div class="stepper-row">
-          <span class="stepper-label">Select Quantity:</span>
-          <div class="stepper-control">
-            <button class="stepper-btn" onclick="stepModalQty(${prod.id}, -1)">-</button>
-            <input type="number" id="modal-qty-${prod.id}" class="stepper-input" value="${currentQty}" min="${prod.minimumOrderQuantity}" />
-            <button class="stepper-btn" onclick="stepModalQty(${prod.id}, 1)">+</button>
+      <!-- Sticky Bottom Action Footer -->
+      <div class="modal-sticky-footer">
+        <div class="modal-calc-row">
+          <div class="modal-stepper-wrap">
+            <span class="stepper-label-text">Qty:</span>
+            <div class="stepper-control modern-stepper">
+              <button type="button" class="stepper-btn" onclick="stepModalQty(${prod.id}, -1)">−</button>
+              <input type="number" id="modal-qty-${prod.id}" class="stepper-input" value="${currentQty}" min="${prod.minimumOrderQuantity}" onchange="validateModalQtyInput(${prod.id}, this.value)" />
+              <button type="button" class="stepper-btn" onclick="stepModalQty(${prod.id}, 1)">+</button>
+            </div>
+          </div>
+
+          <div class="modal-subtotal-block">
+            <span class="calc-label">Total Amount</span>
+            <span class="calc-amount" id="modal-subtotal-${prod.id}">₹${initialLineTotal.toLocaleString('en-IN')}</span>
           </div>
         </div>
 
-        <button class="btn-add-cart" onclick="addModalToCart(${prod.id})">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-5Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          <span>${inCart ? 'Update in Cart' : 'Add to Wholesale Cart'}</span>
-        </button>
+        <div class="modal-action-buttons">
+          <button type="button" class="btn-sheet-cart" onclick="addModalToCart(${prod.id})">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-5Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span id="modal-cart-btn-text-${prod.id}">${inCart ? 'Update Cart' : '+ Add to Cart'}</span>
+          </button>
 
-        <button class="btn-quick-whatsapp" onclick="quickWhatsAppOrder(${prod.id})">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
-          <span>Generate Bill &amp; WhatsApp</span>
-        </button>
+          <button type="button" class="btn-sheet-whatsapp" onclick="quickWhatsAppOrderFromModal(${prod.id})">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
+            <span>Order on WhatsApp</span>
+          </button>
+        </div>
       </div>
     </div>
   `;
 
-  modal.classList.add('active');
+  modal.classList.add('active', 'sheet-mode');
   document.body.classList.add('modal-open');
   document.body.style.overflow = 'hidden';
+}
+
+function updateModalSubtotal(productId, qty) {
+  const prod = PRODUCTS.find((p) => p.id === productId);
+  if (!prod) return;
+  const subtotalEl = document.getElementById(`modal-subtotal-${productId}`);
+  if (subtotalEl) {
+    const total = prod.wholesalePrice * qty;
+    subtotalEl.textContent = `₹${total.toLocaleString('en-IN')}`;
+  }
 }
 
 function stepModalQty(productId, delta) {
@@ -680,10 +735,24 @@ function stepModalQty(productId, delta) {
   let cur = parseInt(input.value, 10) || prod.minimumOrderQuantity;
   let next = cur + delta;
   if (next < prod.minimumOrderQuantity) {
-    showToast(`MOQ is ${prod.minimumOrderQuantity}`);
+    showToast(`Minimum order quantity (MOQ) is ${prod.minimumOrderQuantity}`);
     next = prod.minimumOrderQuantity;
   }
   input.value = next;
+  updateModalSubtotal(productId, next);
+}
+
+function validateModalQtyInput(productId, val) {
+  const prod = PRODUCTS.find((p) => p.id === productId);
+  if (!prod) return;
+  const input = document.getElementById(`modal-qty-${productId}`);
+  let num = parseInt(val, 10);
+  if (isNaN(num) || num < prod.minimumOrderQuantity) {
+    num = prod.minimumOrderQuantity;
+    showToast(`Quantity set to MOQ: ${prod.minimumOrderQuantity}`);
+  }
+  if (input) input.value = num;
+  updateModalSubtotal(productId, num);
 }
 
 function addModalToCart(productId) {
@@ -695,12 +764,67 @@ function addModalToCart(productId) {
   closeProductModal();
 }
 
+async function quickWhatsAppOrderFromModal(productId) {
+  const prod = PRODUCTS.find((p) => p.id === productId);
+  if (!prod) return;
+
+  const input = document.getElementById(`modal-qty-${productId}`);
+  const qty = input ? parseInt(input.value, 10) : prod.minimumOrderQuantity;
+  closeProductModal();
+
+  const lineTotal = prod.wholesalePrice * qty;
+  const orderNumber = generateOrderNumber();
+  const dateStr = new Date().toLocaleString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+
+  const singleItemOrder = {
+    orderNumber,
+    dateStr,
+    buyerName: 'Direct Wholesale Buyer',
+    buyerPhone: 'Direct via WhatsApp',
+    businessName: 'Hardware Store / Retailer',
+    fullAddress: 'Indore Local Dispatch (Factory Hub)',
+    isLocal: true,
+    deliveryZoneLabel: 'Indore Local Dispatch (FREE)',
+    deliveryCharge: 0,
+    paymentMethod: 'Cash / UPI on Delivery',
+    orderNotes: 'Direct Single-Product Wholesale Order',
+    items: [
+      {
+        productId: prod.id,
+        name: prod.name,
+        sku: prod.sku,
+        unit: prod.unit,
+        price: prod.wholesalePrice,
+        quantity: qty,
+        subtotal: lineTotal,
+      },
+    ],
+    totalUnits: qty,
+    subtotal: lineTotal,
+    grandTotal: lineTotal,
+    timestamp: new Date().toISOString(),
+  };
+
+  lastPlacedOrder = singleItemOrder;
+  showOrderReceipt(singleItemOrder);
+  await shareOrderNativeOrWhatsApp(singleItemOrder);
+}
+
 function closeProductModal(e) {
-  if (e && e.target !== e.currentTarget && !e.target.classList.contains('btn-modal-close')) {
+  if (e && e.target !== e.currentTarget && !e.target.classList.contains('btn-modal-close-round') && !e.target.closest('.btn-modal-close-round')) {
     return;
   }
   const modal = document.getElementById('productModalBackdrop');
-  if (modal) modal.classList.remove('active');
+  if (modal) {
+    modal.classList.remove('active', 'sheet-mode');
+  }
   document.body.classList.remove('modal-open');
   document.body.style.overflow = '';
 }

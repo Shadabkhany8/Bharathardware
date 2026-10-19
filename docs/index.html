@@ -237,6 +237,39 @@
         visibility: hidden !important;
         pointer-events: none !important;
       }
+      .modal-backdrop.sheet-mode {
+        align-items: flex-end !important;
+        padding: 0 !important;
+      }
+      .modal-backdrop.sheet-mode .product-sheet-card {
+        border-radius: 22px 22px 0 0 !important;
+        max-height: 88vh !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        animation: sheetSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      }
+      .modal-prod-img-box {
+        height: 190px !important;
+        margin-bottom: 0.75rem !important;
+      }
+      .modal-sheet-scrollable {
+        padding: 0.4rem 1rem 0.75rem 1rem !important;
+      }
+      .modal-sheet-title {
+        font-size: 1.1rem !important;
+      }
+      .modal-sticky-footer {
+        padding: 0.65rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 10px)) 1rem !important;
+      }
+      .modal-action-buttons {
+        grid-template-columns: 1fr 1.35fr !important;
+        gap: 0.4rem !important;
+      }
+      @keyframes sheetSlideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+      }
     }
     @media (max-width: 360px) {
       .product-grid {
@@ -539,13 +572,10 @@
     </div>
   </aside>
 
-  <!-- Product Detail Modal -->
+  <!-- Product Detail Modal (Bottom Sheet on Mobile, Centered Modal on Desktop) -->
   <div class="modal-backdrop" id="productModalBackdrop" onclick="closeProductModal(event)">
-    <div class="modal-card product-modal" onclick="event.stopPropagation()">
-      <button class="btn-modal-close" onclick="closeProductModal()">&times;</button>
-      <div class="product-modal-grid" id="productModalContent">
-        <!-- Rendered dynamically by app.js -->
-      </div>
+    <div class="modal-card product-sheet-card" onclick="event.stopPropagation()" id="productModalContent">
+      <!-- Rendered dynamically by app.js -->
     </div>
   </div>
 
@@ -869,7 +899,7 @@
   </footer>
 
   <!-- Application Logic with Cache Busting -->
-  <script src="app.js?v=20261019_1740"></script>
+  <script src="app.js?v=20261019_1815"></script>
 </body>
 
 </html>

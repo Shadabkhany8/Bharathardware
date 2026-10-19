@@ -1,0 +1,22 @@
+{
+  "name": "Bharat Hardware B2B Wholesale",
+  "short_name": "BharatHardware",
+  "description": "Industrial Hardware & Abrasive Sponges Wholesale Catalog - Indore Hub",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0F172A",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/images/prod_1.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "assets/images/prod_1.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
